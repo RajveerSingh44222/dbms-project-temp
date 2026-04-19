@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EduVault — Academic Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<style>
+:root{--navy:#0B1120;--navy-2:#111827;--navy-3:#1a2436;--navy-4:#243045;--gold:#C9A84C;--gold-lt:#E8C96A;--gold-dk:#A8882A;--gold-glow:rgba(201,168,76,.18);--white:#FAFAF8;--muted:#6B7A94;--muted-lt:#8D9BB5;--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.13);--green:#4CAF76;--green-bg:rgba(76,175,118,.12);--amber:#E8A838;--amber-bg:rgba(232,168,56,.12);--red:#E05555;--red-bg:rgba(224,85,85,.12);--blue:#5B9BD5;--blue-bg:rgba(91,155,213,.12);--purple:#9B7FD4;--purple-bg:rgba(155,127,212,.12);--glass:rgba(255,255,255,.04);--glass-2:rgba(255,255,255,.08);--shadow:0 8px 32px rgba(0,0,0,.4);--shadow-sm:0 2px 8px rgba(0,0,0,.3);--r-sm:8px;--r-md:12px;--r-lg:18px;--r-xl:24px;--t:all .22s cubic-bezier(.4,0,.2,1)}
+[data-theme="light"]{--navy:#F0EDE8;--navy-2:#E8E4DC;--navy-3:#DDD8CF;--navy-4:#D0C9BC;--gold:#8B5E1A;--gold-lt:#A67422;--gold-dk:#6B4812;--gold-glow:rgba(139,94,26,.12);--white:#1a1208;--muted:#6B5C44;--muted-lt:#8B7355;--border:rgba(0,0,0,.09);--border-2:rgba(0,0,0,.15);--green:#2D7A4E;--green-bg:rgba(45,122,78,.1);--amber:#9B6E18;--amber-bg:rgba(155,110,24,.1);--red:#B83030;--red-bg:rgba(184,48,48,.1);--blue:#2B5FA3;--blue-bg:rgba(43,95,163,.1);--purple:#6B4FAA;--purple-bg:rgba(107,79,170,.1);--glass:rgba(0,0,0,.03);--glass-2:rgba(0,0,0,.06);--shadow:0 8px 32px rgba(0,0,0,.12);--shadow-sm:0 2px 8px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;transition:background .35s,color .35s}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+#root{position:relative;z-index:1}
+.nav{background:rgba(11,17,32,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-2);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+[data-theme="light"] .nav{background:rgba(240,237,232,.9)}
+.nav-logo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;color:var(--navy-2);font-family:'DM Serif Display',serif;font-size:17px;box-shadow:0 2px 10px var(--gold-glow);flex-shrink:0}
+.nav-brand{font-family:'DM Serif Display',serif;font-size:17px;color:var(--white)}
+.nav-sub{font-size:10.5px;color:var(--muted);margin-top:1px;letter-spacing:.04em}
+.layout{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:210px;flex-shrink:0;background:var(--navy-2);border-right:1px solid var(--border);padding:1.25rem 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--navy-4)}
+.sb-label{font-size:9.5px;font-weight:600;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:0 1rem;margin-bottom:.4rem;margin-top:1.1rem}
+.sb-label:first-child{margin-top:0}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 1rem;font-size:13px;font-weight:500;color:var(--muted-lt);cursor:pointer;border-left:3px solid transparent;transition:var(--t)}
+.sb-item:hover{background:var(--glass);color:var(--white)}
+.sb-item.active{background:var(--gold-glow);color:var(--gold-lt);border-left-color:var(--gold)}
+.sb-icon{width:15px;text-align:center;font-size:13px;flex-shrink:0}
+.main{flex:1;padding:1.75rem 2rem;overflow-x:hidden;min-width:0}
+.card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;backdrop-filter:blur(8px);transition:border-color .2s}
+.card:hover{border-color:var(--border-2)}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem;margin-bottom:1.4rem}
+.metric-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.25rem;transition:var(--t)}
+.metric-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:var(--border-2)}
+.metric-icon{font-size:20px;margin-bottom:.5rem}
+.metric-label{font-size:10.5px;font-weight:500;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:.25rem}
+.metric-value{font-size:28px;font-weight:300;color:var(--white);line-height:1;font-family:'DM Serif Display',serif}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:.35rem}
+.metric-gold .metric-value{color:var(--gold-lt)}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-gold{background:var(--gold-glow);color:var(--gold-lt)}
+.badge-muted{background:var(--glass-2);color:var(--muted-lt)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--glass-2);cursor:pointer;font-size:12.5px;font-weight:500;color:var(--muted-lt);font-family:'DM Sans',sans-serif;transition:var(--t)}
+.btn:hover{background:var(--glass);color:var(--white)}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:var(--navy-2);border-color:transparent;font-weight:600}
+.btn-gold:hover{background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--navy)}
+.btn-green{background:var(--green-bg);color:var(--green);border-color:transparent}
+.btn-green:hover{background:rgba(76,175,118,.22);color:var(--green)}
+.btn-red{background:var(--red-bg);color:var(--red);border-color:transparent}
+.btn-red:hover{background:rgba(224,85,85,.22);color:var(--red)}
+.btn-sm{padding:4px 10px;font-size:11.5px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.form-group{margin-bottom:.9rem}
+.form-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem;display:block}
+.form-input{width:100%;padding:8px 12px;border:1px solid var(--border-2);border-radius:var(--r-sm);font-size:13.5px;background:var(--navy-3);color:var(--white);font-family:'DM Sans',sans-serif;outline:none;transition:var(--t)}
+[data-theme="light"] .form-input{background:rgba(0,0,0,.04)}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}
+.form-input::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.table-wrap{overflow-x:auto;border-radius:var(--r-md)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead{background:var(--navy-3)}
+th{text-align:left;padding:10px 14px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--border);color:var(--white);vertical-align:middle}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:var(--glass)}
+tbody tr:last-child td{border-bottom:none}
+.progress{height:5px;background:var(--navy-4);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-track{position:absolute;inset:0;background:var(--navy-4);border-radius:22px;transition:var(--t);border:1px solid var(--border-2)}
+.toggle input:checked+.toggle-track{background:var(--gold);border-color:var(--gold)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:var(--t)}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px);animation:fadeIn .15s ease;padding:1rem}
+.modal{background:var(--navy-2);border:1px solid var(--border-2);border-radius:var(--r-xl);padding:1.75rem;width:100%;max-width:520px;box-shadow:var(--shadow);animation:slideUp .2s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'DM Serif Display',serif;font-size:19px;color:var(--white);margin-bottom:1.25rem}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.page-enter{animation:fadeInUp .25s cubic-bezier(.4,0,.2,1)}
+.login-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy);position:relative;overflow:hidden;padding:1.5rem}
+.login-bg::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.login-box{width:100%;max-width:390px;position:relative;z-index:1}
+.login-logo{width:58px;height:58px;border-radius:16px;background:linear-gradient(135deg,var(--gold-dk),var(--gold-lt));display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy-2);box-shadow:0 6px 28px var(--gold-glow)}
+.login-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--white);text-align:center;margin-bottom:.3rem}
+.login-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:1.5rem}
+.role-tabs{display:flex;background:var(--navy-3);border-radius:var(--r-md);padding:3px;gap:3px;margin-bottom:1.25rem;border:1px solid var(--border)}
+.role-tab{flex:1;padding:8px;border-radius:var(--r-sm);border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);font-family:'DM Sans',sans-serif;transition:var(--t)}
+.role-tab.active{background:var(--navy-2);color:var(--white);box-shadow:var(--shadow-sm)}
+.hint-bar{background:var(--blue-bg);border:1px solid rgba(91,155,213,.2);border-radius:var(--r-sm);padding:9px 12px;font-size:11.5px;color:var(--blue);margin-bottom:1.1rem;font-family:'JetBrains Mono',monospace;line-height:1.6}
+.error-msg{font-size:12.5px;color:var(--red);background:var(--red-bg);padding:9px 12px;border-radius:var(--r-sm);margin-bottom:.9rem}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+.section-title{font-family:'DM Serif Display',serif;font-size:21px;color:var(--white)}
+.section-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.avatar-lg{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:24px;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.13)}
+.avatar-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.profile-hero{background:linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.18);border-radius:var(--r-xl);padding:1.75rem;display:flex;gap:1.5rem;align-items:center;margin-bottom:1.4rem;position:relative;overflow:hidden}
+.profile-hero::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--gold-glow),transparent 70%)}
+.profile-name{font-family:'DM Serif Display',serif;font-size:24px;color:var(--white)}
+.profile-meta{font-size:12.5px;color:var(--muted);margin-top:.3rem}
+.profile-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.65rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}.main{padding:1rem}.profile-hero{flex-direction:column}.form-row{grid-template-columns:1fr}}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;padding-top:.75rem}
+.bar-chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar-chart-bar{width:100%;border-radius:4px 4px 0 0;min-width:20px;transition:height .5s cubic-bezier(.4,0,.2,1)}
+.bar-chart-label{font-size:9.5px;color:var(--muted);white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.subj-bar{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.subj-bar:last-child{border-bottom:none}
+.subj-bar-name{font-size:13px;font-weight:500;color:var(--white);flex:0 0 155px}
+.subj-bar-track{flex:1}
+.subj-bar-score{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--muted-lt);flex:0 0 36px;text-align:right}
+.att-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:.9rem}
+.att-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-md);padding:1.1rem;display:flex;flex-direction:column;gap:.65rem;transition:var(--t)}
+.att-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.att-pct{font-family:'DM Serif Display',serif;font-size:26px;line-height:1}
+.schedule-row{display:flex;gap:10px;align-items:stretch;padding:9px 0;border-bottom:1px solid var(--border)}
+.schedule-row:last-child{border-bottom:none}
+.schedule-time{flex:0 0 80px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);padding-top:2px}
+.schedule-bar{width:3px;border-radius:2px;flex-shrink:0}
+.schedule-subj{font-size:13.5px;font-weight:500;color:var(--white)}
+.schedule-room{font-size:11px;color:var(--muted);margin-top:2px}
+.exam-card{display:flex;align-items:center;gap:.9rem;padding:.9rem 1.1rem;background:var(--glass);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:.65rem;transition:var(--t)}
+.exam-card:hover{border-color:var(--border-2)}
+.exam-date-box{background:var(--gold-glow);border:1px solid rgba(201,168,76,.22);border-radius:var(--r-sm);padding:.45rem .6rem;text-align:center;flex-shrink:0;min-width:48px}
+.exam-day{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-lt);line-height:1}
+.exam-month{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.exam-subj{font-size:13.5px;font-weight:500;color:var(--white)}
+.exam-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.todo-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.todo-item:last-child{border-bottom:none}
+.todo-check{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--border-2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--t);flex-shrink:0;font-size:10px}
+.todo-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.todo-text{font-size:13px;color:var(--white);flex:1}
+.todo-text.done{color:var(--muted);text-decoration:line-through}
+.ann{background:linear-gradient(135deg,rgba(91,155,213,.07),rgba(91,155,213,.02));border:1px solid rgba(91,155,213,.18);border-radius:var(--r-md);padding:.9rem 1.1rem;margin-bottom:.65rem}
+.ann-title{font-size:13.5px;font-weight:600;color:var(--white);margin-bottom:.25rem}
+.ann-body{font-size:12.5px;color:var(--muted)}
+.ann-date{font-size:10px;color:var(--muted);margin-top:.4rem;font-family:'JetBrains Mono',monospace}
+.rank-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-md);transition:var(--t)}
+.rank-item:hover{background:var(--glass)}
+.rank-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:18px}
+.search-wrap{position:relative}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+.search-input{padding-left:32px!important}
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}
+.empty-icon{font-size:36px;margin-bottom:.75rem;opacity:.45}
+.empty-text{font-size:13.5px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--navy-4);border-radius:3px}
+.company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:1rem}
+.company-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:var(--t);cursor:pointer}
+.company-card:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.elig-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.elig-row:last-child{border-bottom:none}
+.elig-icon{font-size:16px;flex-shrink:0}
+.elig-label{font-size:13px;color:var(--white);flex:1}
+.elig-result{font-size:12px;font-weight:600}
+.pipeline{display:flex;gap:0;margin:1.25rem 0;overflow-x:auto;padding-bottom:4px}
+.pipe-step{flex:1;min-width:80px;text-align:center;position:relative;padding:0 4px}
+.pipe-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--border-2);z-index:0}
+.pipe-step:last-child::after{display:none}
+.pipe-dot{width:28px;height:28px;border-radius:50%;background:var(--navy-4);border:2px solid var(--border-2);display:flex;align-items:center;justify-content:center;margin:0 auto .4rem;position:relative;z-index:1;font-size:11px;transition:var(--t)}
+.pipe-dot.active{background:var(--gold);border-color:var(--gold);color:var(--navy-2)}
+.pipe-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.pipe-dot.rejected{background:var(--red);border-color:var(--red);color:#fff}
+.pipe-label{font-size:10px;color:var(--muted);white-space:nowrap}
+.pipe-label.active{color:var(--gold-lt);font-weight:600}
+.pipe-label.done{color:var(--green);font-weight:600}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-head{font-size:10px;font-weight:600;color:var(--muted);text-align:center;padding:6px 0;text-transform:uppercase;letter-spacing:.05em}
+.cal-day{min-height:64px;border-radius:var(--r-sm);border:1px solid var(--border);padding:5px;transition:var(--t);background:var(--glass)}
+.cal-day:hover{border-color:var(--border-2);background:var(--glass-2)}
+.cal-day.today{border-color:var(--gold);background:var(--gold-glow)}
+.cal-day.other-month{opacity:.25}
+.cal-date{font-size:11.5px;font-weight:600;color:var(--white);margin-bottom:3px}
+.cal-day.today .cal-date{color:var(--gold-lt)}
+.cal-event{font-size:9px;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.cal-month{font-family:'DM Serif Display',serif;font-size:18px;color:var(--white)}
+.club-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1rem}
+.club-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:var(--t)}
+.club-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.faculty-card{display:flex;gap:14px;align-items:center;padding:12px;border-radius:var(--r-md);background:var(--glass);border:1px solid var(--border);transition:var(--t);margin-bottom:.65rem}
+.faculty-card:hover{border-color:var(--border-2);background:var(--glass-2)}
+.grievance-item{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem 1.1rem;margin-bottom:.65rem;transition:var(--t)}
+.grievance-item:hover{border-color:var(--border-2)}
+.notice-card{border-radius:var(--r-md);padding:.9rem 1.1rem;margin-bottom:.65rem;border-left:3px solid}
+.notice-urgent{background:var(--red-bg);border-color:var(--red)}
+.notice-info{background:var(--blue-bg);border-color:var(--blue)}
+.notice-event{background:var(--purple-bg);border-color:var(--purple)}
+.notice-title{font-size:13.5px;font-weight:600;color:var(--white);margin-bottom:.25rem}
+.notice-body{font-size:12.5px;color:var(--muted)}
+.notice-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.5rem;font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.backlog-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.backlog-item:last-child{border-bottom:none}
+.fee-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-md);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:.65rem}
+.trend-chart{display:flex;align-items:flex-end;gap:12px;height:100px;margin-top:.75rem;padding:0 .25rem}
+.trend-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.trend-bar{width:100%;border-radius:4px 4px 0 0;transition:height .5s cubic-bezier(.4,0,.2,1);min-height:4px}
+.trend-val{font-size:10px;color:var(--gold-lt);font-family:'JetBrains Mono',monospace}
+.trend-sem{font-size:9.5px;color:var(--muted)}
+.predictor-result{border-radius:var(--r-md);padding:1rem 1.25rem;margin-top:1rem;border:1px solid}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
+.tab{padding:8px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted);font-weight:500;transition:var(--t);border-radius:var(--r-sm) var(--r-sm) 0 0}
+.tab:hover{color:var(--white);background:var(--glass)}
+.tab.active{color:var(--gold-lt);border-bottom-color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const {useState,useEffect}=React;
+const R=React.createElement;
+
+const STUDENTS=[
+  {student_id:1,name:'Priya Sharma', email:'priya@college.edu', semester:4,branch:'CSE',cgpa:8.9,roll:'CSE21004',phone:'9876543210',backlogs:0},
+  {student_id:2,name:'Rohan Mehta',  email:'rohan@college.edu', semester:3,branch:'CSE',cgpa:7.2,roll:'CSE22015',phone:'9812345678',backlogs:1},
+  {student_id:3,name:'Ananya Singh', email:'ananya@college.edu',semester:5,branch:'IT', cgpa:9.4,roll:'IT20021', phone:'9856789012',backlogs:0},
+  {student_id:4,name:'Karan Patel',  email:'karan@college.edu', semester:2,branch:'ECE',cgpa:6.8,roll:'ECE23008',phone:'9890123456',backlogs:2},
+];
+const SUBJECTS=[
+  {subject_id:1,subject_name:'Data Structures',  credits:4,code:'CS301',faculty:'Dr. A. Kumar',  room:'LH-201',schedule:'Mon 9am, Wed 11am, Fri 9am'},
+  {subject_id:2,subject_name:'Database Mgmt',    credits:3,code:'CS302',faculty:'Prof. R. Mehta',room:'LH-304',schedule:'Tue 10am, Thu 10am, Sat 9am'},
+  {subject_id:3,subject_name:'Operating Systems',credits:4,code:'CS303',faculty:'Dr. S. Verma',  room:'LH-101',schedule:'Mon 11am, Wed 9am, Thu 2pm'},
+  {subject_id:4,subject_name:'Computer Networks',credits:3,code:'CS304',faculty:'Prof. P. Joshi', room:'LH-205',schedule:'Tue 2pm, Fri 11am, Sat 11am'},
+];
+const INITIAL_MARKS=[
+  {mark_id:1, student_id:1,subject_id:1,internal_marks:38,external_marks:72,total_marks:110,grade:'A'},
+  {mark_id:2, student_id:1,subject_id:2,internal_marks:35,external_marks:68,total_marks:103,grade:'B+'},
+  {mark_id:3, student_id:1,subject_id:3,internal_marks:40,external_marks:78,total_marks:118,grade:'A+'},
+  {mark_id:4, student_id:1,subject_id:4,internal_marks:32,external_marks:65,total_marks:97, grade:'B'},
+  {mark_id:5, student_id:2,subject_id:1,internal_marks:28,external_marks:55,total_marks:83, grade:'C+'},
+  {mark_id:6, student_id:2,subject_id:2,internal_marks:36,external_marks:70,total_marks:106,grade:'A'},
+  {mark_id:7, student_id:3,subject_id:1,internal_marks:40,external_marks:80,total_marks:120,grade:'A+'},
+  {mark_id:8, student_id:3,subject_id:3,internal_marks:37,external_marks:74,total_marks:111,grade:'A'},
+  {mark_id:9, student_id:4,subject_id:2,internal_marks:25,external_marks:48,total_marks:73, grade:'C'},
+  {mark_id:10,student_id:4,subject_id:4,internal_marks:30,external_marks:60,total_marks:90, grade:'B-'},
+];
+const ATTENDANCE=[
+  {attendance_id:1, student_id:1,subject_id:1,total_classes:40,attended:38,pct:95},
+  {attendance_id:2, student_id:1,subject_id:2,total_classes:35,attended:30,pct:85.7},
+  {attendance_id:3, student_id:1,subject_id:3,total_classes:40,attended:36,pct:90},
+  {attendance_id:4, student_id:1,subject_id:4,total_classes:35,attended:28,pct:80},
+  {attendance_id:5, student_id:2,subject_id:1,total_classes:40,attended:22,pct:55},
+  {attendance_id:6, student_id:2,subject_id:2,total_classes:35,attended:32,pct:91.4},
+  {attendance_id:7, student_id:3,subject_id:1,total_classes:40,attended:40,pct:100},
+  {attendance_id:8, student_id:3,subject_id:3,total_classes:40,attended:38,pct:95},
+  {attendance_id:9, student_id:4,subject_id:2,total_classes:35,attended:20,pct:57.1},
+  {attendance_id:10,student_id:4,subject_id:4,total_classes:35,attended:35,pct:100},
+];
+const USERS=[
+  {username:'admin', password:'admin123',role:'admin',  student_id:null},
+  {username:'priya', password:'pass123', role:'student',student_id:1},
+  {username:'rohan', password:'pass123', role:'student',student_id:2},
+  {username:'ananya',password:'pass123', role:'student',student_id:3},
+  {username:'karan', password:'pass123', role:'student',student_id:4},
+];
+const COMPANIES=[
+  {id:1,name:'Google',    emoji:'🔍',color:'#4285F4',role:'SWE Intern',    pkg:'12 LPA',cgpa_cutoff:8.0,branches:['CSE','IT'],          backlogs_allowed:0,deadline:'Apr 20',openings:5, desc:'Google India campus hiring for SWE roles. Competitive coding + system design rounds.'},
+  {id:2,name:'Microsoft', emoji:'🪟',color:'#00A4EF',role:'SDE-1',         pkg:'18 LPA',cgpa_cutoff:7.5,branches:['CSE','IT','ECE'],     backlogs_allowed:0,deadline:'Apr 22',openings:8, desc:'Full-time SDE-1 role at Microsoft IDC Hyderabad. Focus on .NET, Azure.'},
+  {id:3,name:'Amazon',    emoji:'📦',color:'#FF9900',role:'SDE-1',         pkg:'22 LPA',cgpa_cutoff:7.0,branches:['CSE','IT'],           backlogs_allowed:1,deadline:'Apr 25',openings:12,desc:'Amazon SDE-1 through FAANG-style coding and LLD rounds.'},
+  {id:4,name:'Infosys',   emoji:'💼',color:'#007CC3',role:'Systems Eng',   pkg:'3.6 LPA',cgpa_cutoff:6.0,branches:['CSE','IT','ECE','ME'],backlogs_allowed:2,deadline:'May 1', openings:50,desc:'Mass hiring for Systems Engineer. Service-based role with training bond.'},
+  {id:5,name:'TCS',       emoji:'🏢',color:'#FF6600',role:'Ninja/Digital', pkg:'7 LPA',  cgpa_cutoff:6.0,branches:['CSE','IT','ECE'],    backlogs_allowed:0,deadline:'May 5', openings:30,desc:'TCS NQT based hiring for Ninja and Digital profiles.'},
+  {id:6,name:'Flipkart',  emoji:'🛒',color:'#F7C900',role:'SDE-1',         pkg:'20 LPA', cgpa_cutoff:7.5,branches:['CSE','IT'],           backlogs_allowed:0,deadline:'Apr 28',openings:6, desc:'Flipkart Bangalore SDE-1. Product engineering, strong DSA required.'},
+];
+const SEMESTER_TREND=[{sem:1,gpa:7.8},{sem:2,gpa:8.1},{sem:3,gpa:8.4},{sem:4,gpa:8.9}];
+const EXAMS=[
+  {id:1,subject:'Data Structures',  day:14,month:'Apr',time:'10:00 AM',room:'Exam Hall A',credits:4},
+  {id:2,subject:'Database Mgmt',    day:16,month:'Apr',time:'02:00 PM',room:'Exam Hall B',credits:3},
+  {id:3,subject:'Operating Systems',day:18,month:'Apr',time:'10:00 AM',room:'Exam Hall A',credits:4},
+  {id:4,subject:'Computer Networks',day:20,month:'Apr',time:'02:00 PM',room:'Exam Hall C',credits:3},
+];
+const SCHEDULE=[
+  {time:'9:00 AM', subject:'Data Structures',  room:'LH-201',color:'#5B9BD5',day:'Mon'},
+  {time:'10:00 AM',subject:'Database Mgmt',    room:'LH-304',color:'#C9A84C',day:'Tue'},
+  {time:'11:00 AM',subject:'Operating Systems',room:'LH-101',color:'#4CAF76',day:'Mon'},
+  {time:'2:00 PM', subject:'Computer Networks',room:'LH-205',color:'#E05555',day:'Tue'},
+];
+const TODOS_DEFAULT=[
+  {id:1,text:'Complete DS assignment on Graphs',   done:false,due:'Apr 12'},
+  {id:2,text:'Revise OS process scheduling',       done:true, due:'Apr 11'},
+  {id:3,text:'DBMS lab report submission',         done:false,due:'Apr 13'},
+  {id:4,text:'Read CN chapter 5 – IP Addressing',  done:false,due:'Apr 14'},
+];
+const NOTICES=[
+  {id:1,title:'Mid-Semester Exam Schedule Released',body:'Exams begin April 14. Hall tickets available from the exam cell. Carry college ID.',date:'Apr 2', type:'urgent',author:'Exam Cell'},
+  {id:2,title:'Hackathon 2025 — Registrations Open',body:'Annual college hackathon on April 26-27. Teams of 2-4. Register via student portal.',date:'Apr 1', type:'event', author:'Tech Club'},
+  {id:3,title:'Library Extended Hours',             body:'Library open till 10 PM through exam season. Silent zone strictly enforced.',        date:'Mar 30',type:'info',  author:'Library'},
+  {id:4,title:'Attendance Shortage Warning',        body:'Students below 75% must meet HOD before April 10 or risk debarment.',               date:'Mar 28',type:'urgent',author:'Academic Office'},
+  {id:5,title:'Cultural Fest — Euphoria 2025',      body:'College cultural fest on May 3-5. Registrations for events open now!',              date:'Mar 25',type:'event', author:'Cultural Committee'},
+];
+const FACULTY=[
+  {id:1,name:'Dr. A. Kumar',   subject:'Data Structures',  cabin:'Block-A, Room 201',hours:'Mon-Wed 2-4 PM', email:'akumar@college.edu', avatar:'#185FA5'},
+  {id:2,name:'Prof. R. Mehta', subject:'Database Mgmt',    cabin:'Block-B, Room 105',hours:'Tue-Thu 3-5 PM', email:'rmehta@college.edu', avatar:'#0F6E56'},
+  {id:3,name:'Dr. S. Verma',   subject:'Operating Systems',cabin:'Block-A, Room 108',hours:'Mon-Fri 12-1 PM',email:'sverma@college.edu', avatar:'#993C1D'},
+  {id:4,name:'Prof. P. Joshi', subject:'Computer Networks',cabin:'Block-C, Room 310',hours:'Wed-Fri 10-12 PM',email:'pjoshi@college.edu',avatar:'#534AB7'},
+  {id:5,name:'Dr. N. Gupta',   subject:'Mathematics III',  cabin:'Block-D, Room 204',hours:'Tue-Thu 9-11 AM',email:'ngupta@college.edu', avatar:'#854F0B'},
+  {id:6,name:'Prof. M. Singh', subject:'Engineering Ethics',cabin:'Block-B, Room 203',hours:'Mon-Wed 11-1 PM',email:'msingh@college.edu',avatar:'#1a6b5a'},
+];
+const CLUBS=[
+  {id:1,name:'Coding Club',         emoji:'💻',desc:'Competitive programming, hackathons, open source.',members:142,events:['CodeSprint Apr 15','LeetCode Apr 20'],joined:false},
+  {id:2,name:'Robotics Club',       emoji:'🤖',desc:'Build and compete with robots. Annual Robowar.',  members:68, events:['Workshop Apr 18','Robowar May 10'],  joined:false},
+  {id:3,name:'Music Society',       emoji:'🎵',desc:'Western and classical music. Fest performances.',  members:95, events:['Jam Session Apr 13','Euphoria May 3'],joined:true},
+  {id:4,name:'E-Cell',             emoji:'🚀',desc:'Startups, pitching, mentorship from industry.',    members:110,events:['Speaker Talk Apr 16','Pitch Day Apr 30'],joined:false},
+  {id:5,name:'Photography Club',    emoji:'📸',desc:'Workshops, photo walks, annual exhibition.',       members:74, events:['Photo Walk Apr 14','Exhibition May 1'],joined:false},
+  {id:6,name:'Literary Society',    emoji:'📚',desc:'Debates, creative writing, poetry, quizzes.',      members:88, events:['Debate Apr 17','Quiz Apr 24'],         joined:false},
+];
+const BACKLOGS_DEFAULT=[{id:1,subject:'Engineering Maths II',code:'MA201',credits:4,cleared:false,reexam:'Apr 19'}];
+const GRIEVANCES_DEFAULT=[
+  {id:1,title:'Attendance marked wrong in CS301',category:'Attendance',body:'I was present on March 15 and 18 but attendance shows absent.',status:'In Review',date:'Apr 1'},
+  {id:2,title:'Lab fee excess charged',           category:'Fee',       body:'Lab fee was charged twice in the March statement.',             status:'Resolved',  date:'Mar 25'},
+];
+const CAL_EVENTS=[
+  {date:'2025-04-14',label:'DS Exam',   color:'var(--red)'},
+  {date:'2025-04-15',label:'CodeSprint',color:'var(--blue)'},
+  {date:'2025-04-16',label:'DB Exam',   color:'var(--red)'},
+  {date:'2025-04-17',label:'Debate',    color:'var(--purple)'},
+  {date:'2025-04-18',label:'OS Exam',   color:'var(--red)'},
+  {date:'2025-04-20',label:'CN Exam',   color:'var(--red)'},
+  {date:'2025-04-26',label:'Hackathon', color:'var(--green)'},
+  {date:'2025-05-03',label:'Euphoria',  color:'var(--amber)'},
+];
+const PLACE_STATS={total_offers:87,highest_pkg:'45 LPA',avg_pkg:'12.4 LPA',companies_visited:24,placed_pct:78,branch_stats:[{branch:'CSE',pct:92},{branch:'IT',pct:85},{branch:'ECE',pct:71},{branch:'ME',pct:58}]};
+const FEES=[
+  {sem:'Semester 4',amount:'₹48,500',status:'Paid',  due:'Feb 28',paid:'Feb 20'},
+  {sem:'Semester 3',amount:'₹48,500',status:'Paid',  due:'Aug 31',paid:'Aug 25'},
+  {sem:'Semester 2',amount:'₹46,000',status:'Paid',  due:'Feb 28',paid:'Feb 22'},
+  {sem:'Semester 1',amount:'₹46,000',status:'Paid',  due:'Aug 31',paid:'Aug 29'},
+];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// helpers
+const subjectName=id=>(SUBJECTS.find(s=>s.subject_id===id)||{subject_name:'—'}).subject_name;
+const studentName=id=>(STUDENTS.find(s=>s.student_id===id)||{name:'—'}).name;
+const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const avatarBg=id=>['#185FA5','#0F6E56','#993C1D','#534AB7','#854F0B'][id%5];
+const gradeClass=g=>{if(!g)return'badge-muted';if(g.startsWith('A'))return'badge-green';if(g.startsWith('B'))return'badge-blue';if(g.startsWith('C'))return'badge-amber';return'badge-red';};
+const attColor=p=>p>=75?'var(--green)':p>=60?'var(--amber)':'var(--red)';
+const attClass=p=>p>=75?'badge-green':p>=60?'badge-amber':'badge-red';
+const calcGPA=marks=>{if(!marks.length)return'—';return((marks.reduce((s,m)=>s+m.total_marks,0)/(marks.length*150))*10).toFixed(2);};
+
+// ── SHARED COMPONENTS ────────────────────────────────────────────────────────
+function DarkToggle({dark,setDark}){return R('label',{className:'toggle'},R('input',{type:'checkbox',checked:dark,onChange:()=>setDark(d=>!d)}),R('span',{className:'toggle-track'}),R('span',{className:'toggle-thumb'}));}
+
+function Navbar({user,dark,setDark,onLogout}){
+  const st=user.role==='student'?STUDENTS.find(s=>s.student_id===user.student_id):null;
+  return R('nav',{className:'nav'},
+    R('div',{style:{display:'flex',alignItems:'center',gap:12}},
+      R('div',{className:'nav-logo'},'E'),
+      R('div',null,R('div',{className:'nav-brand'},'EduVault'),R('div',{className:'nav-sub'},user.role==='admin'?'Administrator Console':st?st.branch+' • '+st.roll:''))
+    ),
+    R('div',{style:{display:'flex',alignItems:'center',gap:12}},
+      R('div',{style:{display:'flex',alignItems:'center',gap:7}},R('span',{style:{fontSize:12,color:'var(--muted)'}},dark?'🌙':'☀️'),R(DarkToggle,{dark,setDark})),
+      st&&R('div',{className:'avatar-sm',style:{background:avatarBg(user.student_id)}},initials(st.name)),
+      R('button',{className:'btn btn-sm',onClick:onLogout},'← Sign out')
+    )
+  );
+}
+
+function Sidebar({page,setPage,role}){
+  const adminSections=[
+    {label:'Management',links:[{id:'overview',icon:'◈',label:'Overview'},{id:'students',icon:'◉',label:'Students'},{id:'marks',icon:'◌',label:'Marks'},{id:'attendance',icon:'▦',label:'Attendance'},{id:'analytics',icon:'✦',label:'Analytics'}]},
+    {label:'Communication',links:[{id:'notices',icon:'📋',label:'Notice Board'},{id:'grievances',icon:'📨',label:'Grievances'}]},
+  ];
+  const studentSections=[
+    {label:'Academics',links:[{id:'dashboard',icon:'◈',label:'Dashboard'},{id:'marks',icon:'◉',label:'My Grades'},{id:'attendance',icon:'◌',label:'Attendance'},{id:'predictor',icon:'🎯',label:'CGPA Predictor'},{id:'backlogs',icon:'⚠',label:'Backlogs'}]},
+    {label:'Campus',links:[{id:'schedule',icon:'▦',label:'Schedule'},{id:'exams',icon:'✦',label:'Exams'},{id:'todos',icon:'◇',label:'To-Do'},{id:'calendar',icon:'📅',label:'Calendar'},{id:'clubs',icon:'🎭',label:'Clubs'}]},
+    {label:'Placement',links:[{id:'placement',icon:'🏢',label:'Placements'}]},
+    {label:'Support',links:[{id:'faculty',icon:'👤',label:'Faculty'},{id:'notices',icon:'📋',label:'Notices'},{id:'grievances',icon:'📨',label:'Grievances'},{id:'fees',icon:'💳',label:'Fee Status'}]},
+  ];
+  const sections=role==='admin'?adminSections:studentSections;
+  return R('div',{className:'sidebar'},
+    sections.map(sec=>R(React.Fragment,{key:sec.label},
+      R('div',{className:'sb-label'},sec.label),
+      sec.links.map(l=>R('div',{key:l.id,className:'sb-item'+(page===l.id?' active':''),onClick:()=>setPage(l.id)},R('span',{className:'sb-icon'},l.icon),l.label))
+    ))
+  );
+}
+
+function Login({onLogin,dark,setDark}){
+  const [role,setRole]=useState('student');
+  const [username,setUsername]=useState('');
+  const [password,setPassword]=useState('');
+  const [error,setError]=useState('');
+  const [loading,setLoading]=useState(false);
+  function submit(ev){ev.preventDefault();setError('');setLoading(true);setTimeout(()=>{const u=USERS.find(u=>u.username===username&&u.password===password&&u.role===role);if(u)onLogin(u);else setError('Invalid credentials.');setLoading(false);},500);}
+  const hint=role==='admin'?'admin / admin123':'priya / pass123  ·  rohan / pass123\nananya / pass123  ·  karan / pass123';
+  return R('div',{className:'login-bg'},
+    R('div',{className:'login-box'},
+      R('div',{className:'login-logo'},'E'),
+      R('h1',{className:'login-title'},'EduVault'),
+      R('p',{className:'login-sub'},'Academic Management System'),
+      R('div',{className:'card',style:{background:'var(--navy-2)',border:'1px solid var(--border-2)'}},
+        R('div',{className:'role-tabs'},['student','admin'].map(r=>R('button',{key:r,className:'role-tab'+(role===r?' active':''),onClick:()=>{setRole(r);setError('');}},r==='student'?'🎓  Student':'⚙️  Admin'))),
+        R('div',{className:'hint-bar'},hint),
+        R('form',{onSubmit:submit},
+          R('div',{className:'form-group'},R('label',{className:'form-label'},'Username'),R('input',{className:'form-input',type:'text',placeholder:'Enter username',value:username,onChange:ev=>setUsername(ev.target.value),required:true})),
+          R('div',{className:'form-group'},R('label',{className:'form-label'},'Password'),R('input',{className:'form-input',type:'password',placeholder:'••••••••',value:password,onChange:ev=>setPassword(ev.target.value),required:true})),
+          error&&R('div',{className:'error-msg'},'⚠ '+error),
+          R('button',{className:'btn btn-gold',type:'submit',style:{width:'100%',justifyContent:'center',padding:'10px'}},loading?'Signing in…':'Sign In →')
+        )
+      ),
+      R('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:8,marginTop:'.9rem'}},R('span',{style:{fontSize:12,color:'var(--muted)'}},dark?'Dark':'Light'),R(DarkToggle,{dark,setDark}))
+    )
+  );
+}
+
+function EditModal({mark,onSave,onClose}){
+  const [form,setForm]=useState({internal_marks:mark.internal_marks,external_marks:mark.external_marks,grade:mark.grade});
+  const i=parseInt(form.internal_marks)||0,x=parseInt(form.external_marks)||0;
+  return R('div',{className:'modal-backdrop',onClick:onClose},
+    R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+      R('div',{className:'modal-title'},'✏ Edit Marks — '+subjectName(mark.subject_id)),
+      R('div',{style:{background:'var(--navy-3)',borderRadius:'var(--r-md)',padding:'.9rem',marginBottom:'1.1rem',display:'flex',gap:'1.5rem'}},
+        R('div',null,R('div',{style:{fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:3}},'Total'),R('div',{style:{fontFamily:'DM Serif Display',fontSize:26,color:'var(--gold-lt)'}},i+x)),
+        R('div',null,R('div',{style:{fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:3}},'Percent'),R('div',{style:{fontFamily:'DM Serif Display',fontSize:26,color:'var(--white)'}},Math.round(((i+x)/150)*100)+'%'))
+      ),
+      R('div',{className:'form-row'},
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Internal (0-50)'),R('input',{className:'form-input',type:'number',min:0,max:50,value:form.internal_marks,onChange:ev=>setForm(f=>({...f,internal_marks:ev.target.value}))})),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'External (0-100)'),R('input',{className:'form-input',type:'number',min:0,max:100,value:form.external_marks,onChange:ev=>setForm(f=>({...f,external_marks:ev.target.value}))}))
+      ),
+      R('div',{className:'form-group'},R('label',{className:'form-label'},'Grade'),R('select',{className:'form-input',value:form.grade,onChange:ev=>setForm(f=>({...f,grade:ev.target.value}))},['O','A+','A','B+','B','B-','C+','C','D','F'].map(g=>R('option',{key:g,value:g},g)))),
+      R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},R('button',{className:'btn',onClick:onClose},'Cancel'),R('button',{className:'btn btn-gold',onClick:()=>onSave({...form,total_marks:i+x})},'Save'))
+    )
+  );
+}
+
+function AddStudentModal({onClose,onAdd}){
+  const [form,setForm]=useState({name:'',email:'',semester:'1',branch:'CSE',roll:'',cgpa:'0.0',backlogs:'0'});
+  const set=k=>ev=>setForm(f=>({...f,[k]:ev.target.value}));
+  return R('div',{className:'modal-backdrop',onClick:onClose},
+    R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+      R('div',{className:'modal-title'},'＋ Add New Student'),
+      R('form',{onSubmit:ev=>{ev.preventDefault();onAdd({student_id:Date.now(),name:form.name,email:form.email,semester:+form.semester,branch:form.branch,roll:form.roll,cgpa:+form.cgpa||0,backlogs:+form.backlogs||0,phone:'—'});}},
+        R('div',{className:'form-row'},R('div',{className:'form-group'},R('label',{className:'form-label'},'Full Name'),R('input',{className:'form-input',value:form.name,onChange:set('name'),required:true,placeholder:'Riya Gupta'})),R('div',{className:'form-group'},R('label',{className:'form-label'},'Email'),R('input',{className:'form-input',type:'email',value:form.email,onChange:set('email'),required:true,placeholder:'riya@college.edu'}))),
+        R('div',{className:'form-row'},R('div',{className:'form-group'},R('label',{className:'form-label'},'Roll No.'),R('input',{className:'form-input',value:form.roll,onChange:set('roll'),required:true,placeholder:'CSE24001'})),R('div',{className:'form-group'},R('label',{className:'form-label'},'Branch'),R('select',{className:'form-input',value:form.branch,onChange:set('branch')},['CSE','IT','ECE','ME','CE'].map(b=>R('option',{key:b,value:b},b))))),
+        R('div',{className:'form-row'},R('div',{className:'form-group'},R('label',{className:'form-label'},'Semester'),R('select',{className:'form-input',value:form.semester,onChange:set('semester')},[1,2,3,4,5,6,7,8].map(s=>R('option',{key:s,value:s},'Sem '+s)))),R('div',{className:'form-group'},R('label',{className:'form-label'},'CGPA'),R('input',{className:'form-input',type:'number',step:'0.01',min:'0',max:'10',value:form.cgpa,onChange:set('cgpa')}))),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Active Backlogs'),R('input',{className:'form-input',type:'number',min:'0',value:form.backlogs,onChange:set('backlogs')})),
+        R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},R('button',{type:'button',className:'btn',onClick:onClose},'Cancel'),R('button',{type:'submit',className:'btn btn-gold'},'Add Student'))
+      )
+    )
+  );
+}
+
+// ── STUDENT FEATURE PAGES ────────────────────────────────────────────────────
+
+function PageCGPAPredictor({student,myMarks}){
+  const totalCredits=SUBJECTS.reduce((s,sub)=>s+sub.credits,0);
+  const [targetGPA,setTargetGPA]=useState('9.0');
+  const currentTotal=myMarks.reduce((s,m)=>s+m.total_marks,0);
+  const subjectsDone=myMarks.length;
+  const subjectsLeft=SUBJECTS.length-subjectsDone;
+  const tg=parseFloat(targetGPA)||0;
+  const targetTotalMarks=Math.round((tg/10)*SUBJECTS.length*150);
+  const needed=targetTotalMarks-currentTotal;
+  const maxPossible=subjectsLeft*150;
+  const neededPct=subjectsLeft>0?Math.round((needed/maxPossible)*100):0;
+  const feasible=neededPct<=100&&neededPct>=0;
+  const creditsEarned=myMarks.reduce((s,m)=>{const sub=SUBJECTS.find(x=>x.subject_id===m.subject_id);return s+(sub?sub.credits:0);},0);
+  const ringPct=creditsEarned/totalCredits;
+  const r=40,circ=2*Math.PI*r;
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'CGPA Predictor'),R('div',{className:'section-sub'},'Calculate what you need to hit your target GPA'))),
+    R('div',{className:'two-col'},
+      R('div',{className:'card'},
+        R('div',{className:'form-group'},
+          R('label',{className:'form-label'},'Target CGPA (out of 10.0)'),
+          R('input',{className:'form-input',type:'number',min:'0',max:'10',step:'0.1',value:targetGPA,onChange:ev=>setTargetGPA(ev.target.value),style:{fontSize:'1.4rem',fontFamily:'DM Serif Display',color:'var(--gold-lt)',textAlign:'center'}})
+        ),
+        R('div',{style:{display:'flex',gap:'1.5rem',marginBottom:'1rem'}},
+          R('div',null,R('div',{style:{fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em'}},'Current GPA'),R('div',{style:{fontFamily:'DM Serif Display',fontSize:30,color:'var(--white)'}},calcGPA(myMarks))),
+          R('div',null,R('div',{style:{fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em'}},'Subjects Done'),R('div',{style:{fontFamily:'DM Serif Display',fontSize:30,color:'var(--white)'}},subjectsDone)),
+          R('div',null,R('div',{style:{fontSize:10,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em'}},'Subjects Left'),R('div',{style:{fontFamily:'DM Serif Display',fontSize:30,color:'var(--white)'}},subjectsLeft))
+        ),
+        subjectsLeft===0
+          ?R('div',{style:{padding:'1rem',background:'var(--green-bg)',border:'1px solid rgba(76,175,118,.25)',borderRadius:'var(--r-md)',color:'var(--green)',fontSize:13}},'✓ All subjects completed. Your final GPA is '+calcGPA(myMarks)+'.')
+          :R('div',{className:'predictor-result',style:{background:feasible?'var(--gold-glow)':'var(--red-bg)',borderColor:feasible?'rgba(201,168,76,.3)':'rgba(224,85,85,.3)'}},
+            R('div',{style:{fontFamily:'DM Serif Display',fontSize:42,color:feasible?'var(--gold-lt)':'var(--red)',lineHeight:1}},neededPct+'%'),
+            R('div',{style:{fontSize:13,color:'var(--muted)',marginTop:'.4rem'}},feasible?'Required score in each remaining subject':'Target GPA of '+tg+' is not achievable. Try a lower target.'),
+            feasible&&R('div',{style:{fontSize:11.5,color:'var(--muted)',marginTop:'.3rem'}},'Need '+needed+' marks across '+subjectsLeft+' subject(s) (max '+maxPossible+')')
+          )
+      ),
+      R('div',{style:{display:'flex',flexDirection:'column',gap:'1.25rem'}},
+        R('div',{className:'card'},
+          R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'.75rem'}},'GPA Trend by Semester'),
+          R('div',{className:'trend-chart'},
+            SEMESTER_TREND.map(d=>{
+              const h=Math.max(8,Math.round(((d.gpa-6)/4)*85));
+              return R('div',{key:d.sem,className:'trend-col'},
+                R('div',{className:'trend-val'},d.gpa),
+                R('div',{className:'trend-bar',style:{height:h+'px',background:'linear-gradient(to top,var(--gold-dk),var(--gold-lt)'}}),
+                R('div',{className:'trend-sem'},'Sem '+d.sem)
+              );
+            })
+          )
+        ),
+        R('div',{className:'card'},
+          R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Credit Progress'),
+          R('div',{style:{display:'flex',alignItems:'center',gap:'1.25rem'}},
+            R('svg',{width:90,height:90,viewBox:'0 0 100 100'},
+              R('circle',{cx:50,cy:50,r:40,fill:'none',stroke:'var(--navy-4)',strokeWidth:12}),
+              R('circle',{cx:50,cy:50,r:40,fill:'none',stroke:'var(--gold)',strokeWidth:12,strokeDasharray:circ,strokeDashoffset:circ*(1-ringPct),strokeLinecap:'round',transform:'rotate(-90 50 50)',style:{transition:'stroke-dashoffset .7s ease'}})
+            ),
+            R('div',null,
+              R('div',{style:{fontFamily:'DM Serif Display',fontSize:32,color:'var(--gold-lt)',lineHeight:1}},creditsEarned),
+              R('div',{style:{fontSize:10.5,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.05em',marginTop:3}},'Credits Earned'),
+              R('div',{style:{fontSize:12,color:'var(--muted)',marginTop:3}},'of '+totalCredits+' required')
+            )
+          )
+        )
+      )
+    )
+  );
+}
+
+function PageBacklogs({student}){
+  const [backlogs,setBacklogs]=useState(student.backlogs>0?BACKLOGS_DEFAULT:[]);
+  const [showAdd,setShowAdd]=useState(false);
+  const [form,setForm]=useState({subject:'',code:'',credits:'3',reexam:''});
+  const toggle=id=>setBacklogs(prev=>prev.map(b=>b.id===id?{...b,cleared:!b.cleared}:b));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},
+      R('div',null,R('div',{className:'section-title'},'Backlog Tracker'),R('div',{className:'section-sub'},backlogs.filter(b=>!b.cleared).length+' active backlog(s)')),
+      R('button',{className:'btn btn-gold',onClick:()=>setShowAdd(true)},'＋ Add Backlog')
+    ),
+    backlogs.length===0
+      ?R('div',{className:'card'},R('div',{className:'empty'},R('div',{className:'empty-icon'},'🎉'),R('div',{className:'empty-text'},'No backlogs! Keep it up.')))
+      :R('div',{className:'card'},
+        backlogs.map(b=>R('div',{key:b.id,className:'backlog-item'},
+          R('div',{onClick:()=>toggle(b.id),style:{width:20,height:20,borderRadius:6,border:'1.5px solid var(--border-2)',background:b.cleared?'var(--green)':'transparent',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'#fff',transition:'var(--t)',flexShrink:0}},b.cleared?'✓':''),
+          R('div',{style:{flex:1}},
+            R('div',{style:{fontSize:13.5,fontWeight:500,color:b.cleared?'var(--muted)':'var(--white)',textDecoration:b.cleared?'line-through':'none'}},b.subject),
+            R('div',{style:{fontSize:11,color:'var(--muted)',fontFamily:'JetBrains Mono',marginTop:2}},b.code+' · '+b.credits+' cr')
+          ),
+          b.cleared
+            ?R('span',{className:'badge badge-green'},'Cleared')
+            :R('div',{style:{textAlign:'right'}},R('div',{style:{fontSize:10,color:'var(--muted)'}},'Re-exam'),R('div',{style:{fontSize:12,color:'var(--amber)',fontFamily:'JetBrains Mono',fontWeight:600}},b.reexam))
+        ))
+      ),
+    showAdd&&R('div',{className:'modal-backdrop',onClick:()=>setShowAdd(false)},
+      R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+        R('div',{className:'modal-title'},'Add Backlog'),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Subject Name'),R('input',{className:'form-input',value:form.subject,onChange:ev=>setForm(f=>({...f,subject:ev.target.value})),placeholder:'Engineering Maths II'})),
+        R('div',{className:'form-row'},
+          R('div',{className:'form-group'},R('label',{className:'form-label'},'Code'),R('input',{className:'form-input',value:form.code,onChange:ev=>setForm(f=>({...f,code:ev.target.value})),placeholder:'MA201'})),
+          R('div',{className:'form-group'},R('label',{className:'form-label'},'Credits'),R('input',{className:'form-input',type:'number',min:1,max:6,value:form.credits,onChange:ev=>setForm(f=>({...f,credits:ev.target.value}))}))
+        ),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Re-exam Date'),R('input',{className:'form-input',value:form.reexam,onChange:ev=>setForm(f=>({...f,reexam:ev.target.value})),placeholder:'Apr 25'})),
+        R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},
+          R('button',{className:'btn',onClick:()=>setShowAdd(false)},'Cancel'),
+          R('button',{className:'btn btn-gold',onClick:()=>{if(form.subject){setBacklogs(prev=>[...prev,{id:Date.now(),subject:form.subject,code:form.code,credits:+form.credits,cleared:false,reexam:form.reexam}]);setShowAdd(false);setForm({subject:'',code:'',credits:'3',reexam:''});}}},'Add')
+        )
+      )
+    )
+  );
+}
+
+function PagePlacement({student}){
+  const [tab,setTab]=useState('drives');
+  const [selected,setSelected]=useState(null);
+  const [apps,setApps]=useState({});
+  const PIPELINE=['Applied','Shortlisted','Interview','Offer'];
+  const getStatus=cid=>apps[cid]||null;
+  const setStatus=(cid,s)=>setApps(prev=>({...prev,[cid]:s}));
+  function checkElig(c){
+    return[
+      {label:'CGPA ≥ '+c.cgpa_cutoff,        pass:student.cgpa>=c.cgpa_cutoff,        yours:student.cgpa},
+      {label:'Branch eligible',               pass:c.branches.includes(student.branch),yours:student.branch},
+      {label:'Backlogs ≤ '+c.backlogs_allowed,pass:student.backlogs<=c.backlogs_allowed,yours:student.backlogs+' backlog(s)'},
+    ];
+  }
+  if(selected){
+    const c=selected;
+    const checks=checkElig(c);
+    const eligible=checks.every(x=>x.pass);
+    const appStatus=getStatus(c.id);
+    const curIdx=PIPELINE.indexOf(appStatus);
+    return R('div',{className:'page-enter'},
+      R('div',{className:'section-head'},
+        R('button',{className:'btn',onClick:()=>setSelected(null)},'← All Drives'),
+        R('span',{className:'badge '+(eligible?'badge-green':'badge-red'),style:{fontSize:12,padding:'5px 12px'}},eligible?'✓ You are Eligible':'✗ Not Eligible')
+      ),
+      R('div',{className:'two-col'},
+        R('div',{className:'card'},
+          R('div',{style:{display:'flex',alignItems:'center',gap:12,marginBottom:'1rem'}},
+            R('div',{style:{width:48,height:48,borderRadius:12,background:c.color+'22',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24}},c.emoji),
+            R('div',null,R('div',{style:{fontFamily:'DM Serif Display',fontSize:20,color:'var(--white)'}},c.name),R('div',{style:{fontSize:12.5,color:'var(--muted)'}},c.role))
+          ),
+          R('div',{style:{fontFamily:'DM Serif Display',fontSize:30,color:'var(--green)',marginBottom:'.65rem'}},c.pkg,R('span',{style:{fontFamily:'DM Sans',fontSize:12,color:'var(--muted)',fontWeight:400}},' per annum')),
+          R('div',{style:{fontSize:13,color:'var(--muted)',lineHeight:1.6,marginBottom:'1rem'}},c.desc),
+          R('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
+            R('span',{className:'badge badge-muted'},'⏰ '+c.deadline),
+            R('span',{className:'badge badge-muted'},'👥 '+c.openings+' openings'),
+            c.branches.map(b=>R('span',{key:b,className:'badge badge-blue'},b))
+          )
+        ),
+        R('div',null,
+          R('div',{className:'card',style:{marginBottom:'1rem'}},
+            R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Eligibility Check'),
+            checks.map((ch,i)=>R('div',{key:i,className:'elig-row'},
+              R('div',{className:'elig-icon'},ch.pass?'✅':'❌'),
+              R('div',{className:'elig-label'},ch.label),
+              R('div',{className:'elig-result',style:{color:ch.pass?'var(--green)':'var(--red)'}},String(ch.yours))
+            )),
+            R('div',{style:{marginTop:'1rem',paddingTop:'1rem',borderTop:'1px solid var(--border)'}},
+              eligible
+                ?appStatus
+                  ?R('div',null,
+                    R('div',{style:{fontSize:11.5,color:'var(--muted)',marginBottom:'.5rem'}},'Application Status'),
+                    R('div',{className:'pipeline'},
+                      PIPELINE.map((step,i)=>{
+                        const done=curIdx>i,active=curIdx===i,rej=appStatus==='Rejected';
+                        return R('div',{key:step,className:'pipe-step'},
+                          R('div',{className:'pipe-dot'+(rej&&active?' rejected':done?' done':active?' active':'')},done?'✓':i+1),
+                          R('div',{className:'pipe-label'+(active?' active':done?' done':'')},step)
+                        );
+                      })
+                    ),
+                    appStatus!=='Offer'&&appStatus!=='Rejected'&&R('div',{style:{display:'flex',gap:6,marginTop:'.75rem',flexWrap:'wrap'}},
+                      PIPELINE[curIdx+1]&&R('button',{className:'btn btn-green btn-sm',onClick:()=>setStatus(c.id,PIPELINE[curIdx+1])},'→ '+PIPELINE[curIdx+1]),
+                      R('button',{className:'btn btn-red btn-sm',onClick:()=>setStatus(c.id,'Rejected')},'Mark Rejected')
+                    ),
+                    appStatus==='Offer'&&R('div',{style:{textAlign:'center',padding:'.9rem',background:'var(--green-bg)',borderRadius:'var(--r-md)',border:'1px solid rgba(76,175,118,.25)',color:'var(--green)',fontWeight:600,fontSize:15}},'🎉 Congratulations! Offer Received!'),
+                    appStatus==='Rejected'&&R('div',{style:{textAlign:'center',padding:'.5rem',fontSize:12,color:'var(--muted)'}},'Better luck with the next drive!')
+                  )
+                  :R('button',{className:'btn btn-gold',style:{width:'100%',justifyContent:'center',padding:'10px'},onClick:()=>setStatus(c.id,'Applied')},'Apply Now')
+                :R('div',{style:{fontSize:13,color:'var(--red)',background:'var(--red-bg)',padding:'.75rem',borderRadius:'var(--r-sm)',textAlign:'center'}},'You do not meet the eligibility criteria.')
+            )
+          )
+        )
+      )
+    );
+  }
+  const myApps=COMPANIES.filter(c=>getStatus(c.id));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Placement Cell'),R('div',{className:'section-sub'},'Campus drives, eligibility & career tracking'))),
+    R('div',{className:'tabs'},[['drives','🏢 Company Drives'],['tracker','📋 My Applications'],['stats','📊 Statistics']].map(([id,label])=>R('div',{key:id,className:'tab'+(tab===id?' active':''),onClick:()=>setTab(id)},label))),
+    tab==='drives'&&R('div',{className:'company-grid'},
+      COMPANIES.map(c=>{
+        const eligible=checkElig(c).every(x=>x.pass);
+        const appStatus=getStatus(c.id);
+        return R('div',{key:c.id,className:'company-card',onClick:()=>setSelected(c)},
+          R('div',{style:{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:'.75rem'}},
+            R('div',{style:{width:44,height:44,borderRadius:10,background:c.color+'22',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22}},c.emoji),
+            R('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}},
+              R('span',{className:'badge '+(eligible?'badge-green':'badge-red'),style:{fontSize:10}},eligible?'Eligible':'Ineligible'),
+              appStatus&&R('span',{className:'badge badge-gold',style:{fontSize:10}},appStatus)
+            )
+          ),
+          R('div',{style:{fontFamily:'DM Serif Display',fontSize:16,color:'var(--white)',marginBottom:2}},c.name),
+          R('div',{style:{fontSize:12,color:'var(--muted)',marginBottom:'.6rem'}},c.role),
+          R('div',{style:{fontFamily:'DM Serif Display',fontSize:22,color:'var(--green)',marginBottom:'.6rem'}},c.pkg),
+          R('div',{style:{display:'flex',gap:8,flexWrap:'wrap',fontSize:11.5}},
+            R('span',{style:{color:'var(--muted)'}},'CGPA: '),R('span',{style:{color:'var(--white)',fontFamily:'JetBrains Mono',fontSize:11}},c.cgpa_cutoff+'+'),
+            R('span',{style:{color:'var(--muted)',marginLeft:6}},'Due: '),R('span',{style:{color:'var(--amber)',fontFamily:'JetBrains Mono',fontSize:11}},c.deadline)
+          )
+        );
+      })
+    ),
+    tab==='tracker'&&R('div',null,
+      myApps.length===0
+        ?R('div',{className:'card'},R('div',{className:'empty'},R('div',{className:'empty-icon'},'📋'),R('div',{className:'empty-text'},"No applications yet. Browse Company Drives to apply.")))
+        :R('div',{className:'card'},
+          R('div',{className:'table-wrap'},
+            R('table',null,
+              R('thead',null,R('tr',null,R('th',null,'Company'),R('th',null,'Role'),R('th',null,'Package'),R('th',null,'Status'),R('th',null,''))),
+              R('tbody',null,myApps.map(c=>R('tr',{key:c.id},
+                R('td',null,R('div',{style:{display:'flex',alignItems:'center',gap:8}},R('span',{style:{fontSize:18}},c.emoji),c.name)),
+                R('td',null,c.role),
+                R('td',null,R('span',{style:{color:'var(--green)',fontFamily:'DM Serif Display',fontSize:15}},c.pkg)),
+                R('td',null,R('span',{className:'badge '+(getStatus(c.id)==='Offer'?'badge-green':getStatus(c.id)==='Rejected'?'badge-red':'badge-gold')},getStatus(c.id))),
+                R('td',null,R('button',{className:'btn btn-sm',onClick:()=>setSelected(c)},'View'))
+              )))
+            )
+          )
+        )
+    ),
+    tab==='stats'&&R('div',null,
+      R('div',{className:'metrics-grid'},
+        R('div',{className:'metric-card metric-gold'},R('div',{className:'metric-icon'},'🏆'),R('div',{className:'metric-label'},'Total Offers'),R('div',{className:'metric-value'},PLACE_STATS.total_offers),R('div',{className:'metric-sub'},'This academic year')),
+        R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'💰'),R('div',{className:'metric-label'},'Highest Package'),R('div',{className:'metric-value',style:{fontSize:20}},PLACE_STATS.highest_pkg),R('div',{className:'metric-sub'},'This year')),
+        R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📊'),R('div',{className:'metric-label'},'Avg Package'),R('div',{className:'metric-value',style:{fontSize:20}},PLACE_STATS.avg_pkg),R('div',{className:'metric-sub'},'All offers')),
+        R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'🏢'),R('div',{className:'metric-label'},'Companies'),R('div',{className:'metric-value'},PLACE_STATS.companies_visited),R('div',{className:'metric-sub'},'Campus drives')),
+        R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'✓'),R('div',{className:'metric-label'},'Placed %'),R('div',{className:'metric-value'},PLACE_STATS.placed_pct+'%'),R('div',{className:'metric-sub'},'Of eligible'))
+      ),
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Branch-wise Placement %'),
+        PLACE_STATS.branch_stats.map(b=>R('div',{key:b.branch,style:{display:'flex',alignItems:'center',gap:12,marginBottom:'.65rem'}},
+          R('div',{style:{flex:'0 0 40px',fontSize:13,fontWeight:500}},b.branch),
+          R('div',{className:'progress',style:{flex:1}},R('div',{className:'progress-fill',style:{width:b.pct+'%',background:b.pct>=80?'var(--green)':b.pct>=60?'var(--blue)':'var(--amber)'}})),
+          R('div',{style:{fontFamily:'JetBrains Mono',fontSize:12,color:'var(--white)',flexShrink:0,width:35,textAlign:'right'}},b.pct+'%')
+        ))
+      )
+    )
+  );
+}
+
+function PageCalendar(){
+  const [month,setMonth]=useState(3);
+  const year=2025;
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const today=new Date();
+  const cells=[];
+  for(let i=0;i<firstDay;i++)cells.push(null);
+  for(let d=1;d<=daysInMonth;d++)cells.push(d);
+  const getEvs=d=>{
+    const key=year+'-'+(String(month+1).padStart(2,'0'))+'-'+(String(d).padStart(2,'0'));
+    return CAL_EVENTS.filter(e=>e.date===key);
+  };
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Event Calendar'),R('div',{className:'section-sub'},'College events, exams & activities'))),
+    R('div',{className:'card'},
+      R('div',{className:'cal-nav'},
+        R('button',{className:'btn btn-sm',onClick:()=>setMonth(m=>Math.max(0,m-1))},'←'),
+        R('div',{className:'cal-month'},MONTHS[month]+' '+year),
+        R('button',{className:'btn btn-sm',onClick:()=>setMonth(m=>Math.min(11,m+1))},'→')
+      ),
+      R('div',{className:'cal-grid'},
+        ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>R('div',{key:d,className:'cal-head'},d)),
+        cells.map((d,i)=>{
+          if(!d)return R('div',{key:'e'+i,className:'cal-day other-month'});
+          const isToday=today.getDate()===d&&today.getMonth()===month&&today.getFullYear()===year;
+          const evs=getEvs(d);
+          return R('div',{key:d,className:'cal-day'+(isToday?' today':'')},
+            R('div',{className:'cal-date'},d),
+            evs.map((ev,j)=>R('div',{key:j,className:'cal-event',style:{background:ev.color.replace('var(--','').replace(')','')+'22'||'rgba(255,255,255,.1)',color:ev.color}},ev.label))
+          );
+        })
+      )
+    ),
+    R('div',{className:'card',style:{marginTop:'1rem'}},
+      R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'All Events'),
+      CAL_EVENTS.map((ev,i)=>R('div',{key:i,style:{display:'flex',alignItems:'center',gap:10,padding:'8px 0',borderBottom:i<CAL_EVENTS.length-1?'1px solid var(--border)':'none'}},
+        R('div',{style:{width:9,height:9,borderRadius:'50%',background:ev.color,flexShrink:0}}),
+        R('div',{style:{flex:1,fontSize:13,color:'var(--white)'}},ev.label),
+        R('div',{style:{fontSize:11,color:'var(--muted)',fontFamily:'JetBrains Mono'}},ev.date)
+      ))
+    )
+  );
+}
+
+function PageClubs(){
+  const [clubs,setClubs]=useState(CLUBS);
+  const toggle=id=>setClubs(prev=>prev.map(c=>c.id===id?{...c,joined:!c.joined}:c));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Clubs & Societies'),R('div',{className:'section-sub'},'Member of '+clubs.filter(c=>c.joined).length+' club(s)'))),
+    R('div',{className:'club-grid'},
+      clubs.map(c=>R('div',{key:c.id,className:'club-card'},
+        R('div',{style:{fontSize:28,marginBottom:'.5rem'}},c.emoji),
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:16,color:'var(--white)',marginBottom:'.2rem'}},c.name),
+        R('div',{style:{fontSize:12,color:'var(--muted)',marginBottom:'.7rem',lineHeight:1.5}},c.desc),
+        R('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'.65rem'}},
+          R('span',{style:{fontSize:11,color:'var(--muted)'}},c.members+' members'),
+          R('span',{className:'badge '+(c.joined?'badge-green':'badge-muted')},c.joined?'Joined':'Not Joined')
+        ),
+        R('div',{style:{marginBottom:'.75rem'}},c.events.map((ev,i)=>R('div',{key:i,style:{fontSize:11,color:'var(--muted-lt)',padding:'3px 0',borderBottom:i<c.events.length-1?'1px solid var(--border)':'none'}},'📅 '+ev))),
+        R('button',{className:'btn '+(c.joined?'btn-red':'btn-green')+' btn-sm',style:{width:'100%',justifyContent:'center'},onClick:()=>toggle(c.id)},c.joined?'Leave Club':'Join Club')
+      ))
+    )
+  );
+}
+
+function PageFaculty(){
+  const [search,setSearch]=useState('');
+  const filtered=FACULTY.filter(f=>f.name.toLowerCase().includes(search.toLowerCase())||f.subject.toLowerCase().includes(search.toLowerCase()));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Faculty Directory'),R('div',{className:'section-sub'},FACULTY.length+' faculty members'))),
+    R('div',{className:'search-wrap',style:{marginBottom:'1rem'}},R('span',{className:'search-icon'},'⌕'),R('input',{className:'form-input search-input',placeholder:'Search by name or subject…',value:search,onChange:ev=>setSearch(ev.target.value)})),
+    filtered.map(f=>R('div',{key:f.id,className:'faculty-card'},
+      R('div',{className:'avatar-sm',style:{background:f.avatar,width:42,height:42,fontSize:14}},initials(f.name)),
+      R('div',{style:{flex:1,minWidth:0}},
+        R('div',{style:{fontSize:14,fontWeight:600,color:'var(--white)'}},f.name),
+        R('div',{style:{fontSize:12,color:'var(--muted)',marginTop:2}},f.subject),
+        R('div',{style:{fontSize:11,color:'var(--muted-lt)',marginTop:3,fontFamily:'JetBrains Mono'}},f.cabin+' · '+f.hours),
+        R('div',{style:{fontSize:11,color:'var(--muted-lt)',marginTop:2}},f.email)
+      ),
+      R('a',{href:'mailto:'+f.email,className:'btn btn-sm',style:{flexShrink:0}},'✉ Mail')
+    )),
+    filtered.length===0&&R('div',{className:'empty'},R('div',{className:'empty-icon'},'🔍'),R('div',{className:'empty-text'},'No faculty found'))
+  );
+}
+
+function PageNotices({role,notices,setNotices}){
+  const [showAdd,setShowAdd]=useState(false);
+  const [form,setForm]=useState({title:'',body:'',type:'info'});
+  const typeStyle={urgent:{cls:'notice-urgent',badge:'badge-red',label:'Urgent'},info:{cls:'notice-info',badge:'badge-blue',label:'Info'},event:{cls:'notice-event',badge:'badge-purple',label:'Event'}};
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},
+      R('div',null,R('div',{className:'section-title'},'Notice Board'),R('div',{className:'section-sub'},notices.length+' active notices')),
+      role==='admin'&&R('button',{className:'btn btn-gold',onClick:()=>setShowAdd(true)},'＋ Post Notice')
+    ),
+    notices.map(n=>{const ts=typeStyle[n.type]||typeStyle.info;return R('div',{key:n.id,className:'notice-card '+ts.cls},R('div',{style:{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:'.3rem'}},R('div',{className:'notice-title'},n.title),R('span',{className:'badge '+ts.badge},ts.label)),R('div',{className:'notice-body'},n.body),R('div',{className:'notice-footer'},R('span',null,n.author),R('span',null,n.date)));}),
+    showAdd&&R('div',{className:'modal-backdrop',onClick:()=>setShowAdd(false)},
+      R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+        R('div',{className:'modal-title'},'Post Notice'),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Title'),R('input',{className:'form-input',value:form.title,onChange:ev=>setForm(f=>({...f,title:ev.target.value})),placeholder:'Notice title'})),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Body'),R('textarea',{className:'form-input',value:form.body,onChange:ev=>setForm(f=>({...f,body:ev.target.value})),placeholder:'Notice details…',rows:3,style:{resize:'vertical'}})),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Type'),R('select',{className:'form-input',value:form.type,onChange:ev=>setForm(f=>({...f,type:ev.target.value}))},R('option',{value:'info'},'Info'),R('option',{value:'urgent'},'Urgent'),R('option',{value:'event'},'Event'))),
+        R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},
+          R('button',{className:'btn',onClick:()=>setShowAdd(false)},'Cancel'),
+          R('button',{className:'btn btn-gold',onClick:()=>{if(form.title&&form.body){setNotices(prev=>[{id:Date.now(),title:form.title,body:form.body,type:form.type,date:'Today',author:'Admin'},...prev]);setShowAdd(false);setForm({title:'',body:'',type:'info'});}}},'Post')
+        )
+      )
+    )
+  );
+}
+
+function PageGrievances({role,grievances,setGrievances}){
+  const [showAdd,setShowAdd]=useState(false);
+  const [form,setForm]=useState({title:'',category:'Attendance',body:''});
+  const STATUSES=['Submitted','In Review','Resolved'];
+  const statusBadge=s=>s==='Resolved'?'badge-green':s==='In Review'?'badge-amber':'badge-muted';
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},
+      R('div',null,R('div',{className:'section-title'},'Grievance Portal'),R('div',{className:'section-sub'},grievances.filter(g=>g.status!=='Resolved').length+' open')),
+      role==='student'&&R('button',{className:'btn btn-gold',onClick:()=>setShowAdd(true)},'＋ Submit')
+    ),
+    grievances.length===0&&R('div',{className:'card'},R('div',{className:'empty'},R('div',{className:'empty-icon'},'📬'),R('div',{className:'empty-text'},'No grievances submitted.'))),
+    grievances.map(g=>R('div',{key:g.id,className:'grievance-item'},
+      R('div',{style:{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:'.3rem'}},R('div',{style:{fontSize:13.5,fontWeight:600,color:'var(--white)'}},g.title),R('span',{className:'badge '+statusBadge(g.status)},g.status)),
+      R('div',{style:{fontSize:12.5,color:'var(--muted)',marginBottom:'.5rem'}},g.body),
+      R('div',{style:{display:'flex',alignItems:'center',gap:.75+'rem',fontSize:11,color:'var(--muted)',fontFamily:'JetBrains Mono',flexWrap:'wrap'}},
+        R('span',{className:'badge badge-muted'},g.category),
+        R('span',null,g.date),
+        role==='admin'&&g.status!=='Resolved'&&R('button',{className:'btn btn-xs btn-green',onClick:()=>setGrievances(prev=>prev.map(x=>x.id===g.id?{...x,status:STATUSES[Math.min(STATUSES.indexOf(x.status)+1,2)]}:x))},'→ Advance')
+      )
+    )),
+    showAdd&&R('div',{className:'modal-backdrop',onClick:()=>setShowAdd(false)},
+      R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+        R('div',{className:'modal-title'},'Submit Grievance'),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Title'),R('input',{className:'form-input',value:form.title,onChange:ev=>setForm(f=>({...f,title:ev.target.value})),placeholder:'Brief description'})),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Category'),R('select',{className:'form-input',value:form.category,onChange:ev=>setForm(f=>({...f,category:ev.target.value}))},['Attendance','Fee','Marks','Infrastructure','Faculty','Other'].map(c=>R('option',{key:c,value:c},c)))),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Details'),R('textarea',{className:'form-input',rows:4,value:form.body,onChange:ev=>setForm(f=>({...f,body:ev.target.value})),placeholder:'Describe your issue…',style:{resize:'vertical'}})),
+        R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},
+          R('button',{className:'btn',onClick:()=>setShowAdd(false)},'Cancel'),
+          R('button',{className:'btn btn-gold',onClick:()=>{if(form.title&&form.body){setGrievances(prev=>[{id:Date.now(),title:form.title,category:form.category,body:form.body,status:'Submitted',date:'Today'},...prev]);setShowAdd(false);setForm({title:'',category:'Attendance',body:''});}}},'Submit')
+        )
+      )
+    )
+  );
+}
+
+function PageFees(){
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Fee Status'),R('div',{className:'section-sub'},'Semester fee payment history'))),
+    R('div',{className:'card'},
+      FEES.map((f,i)=>R('div',{key:i,className:'fee-card'},
+        R('div',{style:{fontSize:22}},'💳'),
+        R('div',{style:{flex:1}},R('div',{style:{fontSize:14,fontWeight:600,color:'var(--white)'}},f.sem),R('div',{style:{fontSize:11.5,color:'var(--muted)',marginTop:2}},'Due: '+f.due+(f.paid?' · Paid: '+f.paid:''))),
+        R('div',{style:{textAlign:'right'}},R('div',{style:{fontFamily:'DM Serif Display',fontSize:18,color:'var(--white)'}},f.amount),R('span',{className:'badge '+(f.status==='Paid'?'badge-green':f.status==='Pending'?'badge-amber':'badge-red'),style:{marginTop:4}},f.status))
+      ))
+    )
+  );
+}
+
+// ── ADMIN PAGES ──────────────────────────────────────────────────────────────
+
+function AdminOverview({marks,students}){
+  const avgAtt=ATTENDANCE.reduce((s,a)=>s+a.pct,0)/ATTENDANCE.length;
+  const top=students.reduce((best,s)=>{const sm=marks.filter(m=>m.student_id===s.student_id);const avg=sm.length?sm.reduce((x,m)=>x+m.total_marks,0)/sm.length:0;return avg>(best.avg||0)?{s,avg}:best;},{});
+  const gc={'A+':0,'A':0,'B+':0,'B':0,'C+':0,'C':0,'D':0,'F':0};
+  marks.forEach(m=>{if(gc[m.grade]!==undefined)gc[m.grade]++;});
+  const maxG=Math.max(...Object.values(gc),1);
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Portal Overview'),R('div',{className:'section-sub'},'Live academic statistics'))),
+    R('div',{className:'metrics-grid'},
+      R('div',{className:'metric-card metric-gold'},R('div',{className:'metric-icon'},'🎓'),R('div',{className:'metric-label'},'Students'),R('div',{className:'metric-value'},students.length),R('div',{className:'metric-sub'},'Enrolled')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📚'),R('div',{className:'metric-label'},'Subjects'),R('div',{className:'metric-value'},SUBJECTS.length),R('div',{className:'metric-sub'},'Active')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📊'),R('div',{className:'metric-label'},'Avg Attendance'),R('div',{className:'metric-value'},avgAtt.toFixed(1)+'%'),R('div',{className:'metric-sub',style:{color:attColor(avgAtt)}},avgAtt>=75?'✓ OK':'⚠ Low')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'🏢'),R('div',{className:'metric-label'},'Placements'),R('div',{className:'metric-value'},PLACE_STATS.total_offers),R('div',{className:'metric-sub'},'Offers this year')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'✦'),R('div',{className:'metric-label'},'Top Student'),R('div',{className:'metric-value',style:{fontSize:18}},top.s?top.s.name.split(' ')[0]:'—'),R('div',{className:'metric-sub'},top.avg?'Avg '+top.avg.toFixed(0)+'/150':''))
+    ),
+    R('div',{className:'two-col'},
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,marginBottom:'1rem',color:'var(--white)'}},'Grade Distribution'),
+        R('div',{className:'bar-chart',style:{height:110}},
+          Object.entries(gc).filter(([,v])=>v>0).map(([g,v])=>R('div',{key:g,className:'bar-chart-col'},R('div',{className:'bar-chart-bar',style:{height:Math.max(6,Math.round((v/maxG)*90))+'px',background:g.startsWith('A')?'var(--green)':g.startsWith('B')?'var(--blue)':g.startsWith('C')?'var(--amber)':'var(--red)'}}),R('div',{className:'bar-chart-label'},g),R('div',{className:'bar-chart-label',style:{color:'var(--white)',fontWeight:600}},v)))
+        )
+      ),
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,marginBottom:'1rem',color:'var(--white)'}},'Student Rankings'),
+        [...students].sort((a,b)=>{const g=s=>{const sm=marks.filter(m=>m.student_id===s.student_id);return sm.length?sm.reduce((x,m)=>x+m.total_marks,0)/sm.length:0;};return g(b)-g(a);}).map((s,i)=>{
+          const sm=marks.filter(m=>m.student_id===s.student_id);
+          const avg=sm.length?(sm.reduce((x,m)=>x+m.total_marks,0)/sm.length).toFixed(0):0;
+          return R('div',{key:s.student_id,className:'rank-item'},R('div',{className:'rank-num'},['🥇','🥈','🥉'][i]||'#'+(i+1)),R('div',{className:'avatar-sm',style:{background:avatarBg(s.student_id),fontSize:11}},initials(s.name)),R('div',{style:{flex:1}},R('div',{style:{fontSize:13,fontWeight:500,color:'var(--white)'}},s.name),R('div',{style:{fontSize:10.5,color:'var(--muted)'}},s.branch+' • '+s.roll)),R('div',{style:{fontFamily:'JetBrains Mono',fontSize:12,color:'var(--gold-lt)'}},avg+'/150'));
+        })
+      )
+    )
+  );
+}
+
+function AdminStudents({students,setStudents}){
+  const [search,setSearch]=useState('');
+  const [showAdd,setShowAdd]=useState(false);
+  const [filterBranch,setFilterBranch]=useState('');
+  const filtered=students.filter(s=>s.name.toLowerCase().includes(search.toLowerCase())&&(!filterBranch||s.branch===filterBranch));
+  const branches=[...new Set(students.map(s=>s.branch))];
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Students'),R('div',{className:'section-sub'},students.length+' enrolled')),R('button',{className:'btn btn-gold',onClick:()=>setShowAdd(true)},'＋ Add Student')),
+    R('div',{className:'card'},
+      R('div',{style:{display:'flex',gap:10,marginBottom:'1.1rem',flexWrap:'wrap'}},
+        R('div',{className:'search-wrap',style:{flex:1,minWidth:180}},R('span',{className:'search-icon'},'⌕'),R('input',{className:'form-input search-input',placeholder:'Search…',value:search,onChange:ev=>setSearch(ev.target.value)})),
+        R('select',{className:'form-input',style:{width:130},value:filterBranch,onChange:ev=>setFilterBranch(ev.target.value)},R('option',{value:''},'All Branches'),branches.map(b=>R('option',{key:b,value:b},b)))
+      ),
+      R('div',{className:'table-wrap'},
+        R('table',null,
+          R('thead',null,R('tr',null,R('th',null,'Student'),R('th',null,'Roll'),R('th',null,'Branch'),R('th',null,'Sem'),R('th',null,'CGPA'),R('th',null,'Backlogs'))),
+          R('tbody',null,filtered.map(s=>R('tr',{key:s.student_id},
+            R('td',null,R('div',{style:{display:'flex',alignItems:'center',gap:8}},R('div',{className:'avatar-sm',style:{background:avatarBg(s.student_id),fontSize:11}},initials(s.name)),R('div',null,R('div',{style:{fontWeight:500}},s.name),R('div',{style:{fontSize:10.5,color:'var(--muted)'}},s.email)))),
+            R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:11,color:'var(--muted-lt)'}},s.roll||'—')),
+            R('td',null,R('span',{className:'badge badge-muted'},s.branch)),
+            R('td',null,'S'+s.semester),
+            R('td',null,R('span',{style:{fontFamily:'DM Serif Display',fontSize:15,color:s.cgpa>=8?'var(--gold-lt)':s.cgpa>=6?'var(--blue)':'var(--red)'}},s.cgpa)),
+            R('td',null,R('span',{className:'badge '+(s.backlogs>0?'badge-red':'badge-green')},s.backlogs>0?s.backlogs+' Active':'None'))
+          )))
+        )
+      ),
+      !filtered.length&&R('div',{className:'empty'},R('div',{className:'empty-icon'},'🔍'),R('div',{className:'empty-text'},'No results'))
+    ),
+    showAdd&&R(AddStudentModal,{onClose:()=>setShowAdd(false),onAdd:s=>{setStudents(prev=>[...prev,s]);setShowAdd(false);}})
+  );
+}
+
+function AdminMarks({marks,setMarks}){
+  const [editMark,setEditMark]=useState(null);
+  const [filterSid,setFilterSid]=useState('');
+  const display=filterSid?marks.filter(m=>m.student_id===+filterSid):marks;
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Marks Management'),R('div',{className:'section-sub'},'Edit and review student marks'))),
+    R('div',{className:'card'},
+      R('div',{style:{marginBottom:'1.1rem'}},R('select',{className:'form-input',style:{maxWidth:220},value:filterSid,onChange:ev=>setFilterSid(ev.target.value)},R('option',{value:''},'All Students'),STUDENTS.map(s=>R('option',{key:s.student_id,value:s.student_id},s.name)))),
+      R('div',{className:'table-wrap'},
+        R('table',null,
+          R('thead',null,R('tr',null,R('th',null,'Student'),R('th',null,'Subject'),R('th',null,'Internal'),R('th',null,'External'),R('th',null,'Total'),R('th',null,'Grade'),R('th',null,''))),
+          R('tbody',null,display.map(m=>R('tr',{key:m.mark_id},
+            R('td',null,R('div',{style:{display:'flex',alignItems:'center',gap:7}},R('div',{className:'avatar-sm',style:{background:avatarBg(m.student_id),fontSize:10,width:26,height:26}},initials(studentName(m.student_id))),studentName(m.student_id))),
+            R('td',null,subjectName(m.subject_id)),
+            R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',color:'var(--muted-lt)',fontSize:12}},m.internal_marks+'/50')),
+            R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',color:'var(--muted-lt)',fontSize:12}},m.external_marks+'/100')),
+            R('td',null,R('span',{style:{fontFamily:'DM Serif Display',fontSize:16}},m.total_marks)),
+            R('td',null,R('span',{className:'badge '+gradeClass(m.grade)},m.grade)),
+            R('td',null,R('button',{className:'btn btn-sm',onClick:()=>setEditMark(m)},'Edit'))
+          )))
+        )
+      )
+    ),
+    editMark&&R(EditModal,{mark:editMark,onSave:data=>{setMarks(prev=>prev.map(m=>m.mark_id===editMark.mark_id?{...m,...data}:m));setEditMark(null);},onClose:()=>setEditMark(null)})
+  );
+}
+
+function AdminAttendance(){
+  const [filterSid,setFilterSid]=useState('');
+  const display=filterSid?ATTENDANCE.filter(a=>a.student_id===+filterSid):ATTENDANCE;
+  const low=ATTENDANCE.filter(a=>a.pct<75).length;
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Attendance Records'),R('div',{className:'section-sub'},low+' record(s) below 75%'))),
+    low>0&&R('div',{style:{background:'var(--amber-bg)',border:'1px solid rgba(232,168,56,.22)',borderRadius:'var(--r-md)',padding:'10px 14px',marginBottom:'1rem',fontSize:12.5,color:'var(--amber)'}},'⚠  '+low+' attendance record(s) below the 75% threshold'),
+    R('div',{className:'card'},
+      R('div',{style:{marginBottom:'1.1rem'}},R('select',{className:'form-input',style:{maxWidth:220},value:filterSid,onChange:ev=>setFilterSid(ev.target.value)},R('option',{value:''},'All Students'),STUDENTS.map(s=>R('option',{key:s.student_id,value:s.student_id},s.name)))),
+      R('div',{className:'table-wrap'},
+        R('table',null,
+          R('thead',null,R('tr',null,R('th',null,'Student'),R('th',null,'Subject'),R('th',null,'Attended'),R('th',null,'Total'),R('th',null,'Percentage'),R('th',null,'Status'))),
+          R('tbody',null,display.map(a=>R('tr',{key:a.attendance_id},
+            R('td',null,studentName(a.student_id)),
+            R('td',null,subjectName(a.subject_id)),
+            R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:12,color:'var(--muted-lt)'}},a.attended)),
+            R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:12,color:'var(--muted)'}},a.total_classes)),
+            R('td',null,R('div',{style:{display:'flex',alignItems:'center',gap:8}},R('div',{className:'progress',style:{width:70}},R('div',{className:'progress-fill',style:{width:a.pct+'%',background:attColor(a.pct)}})),R('span',{style:{fontFamily:'JetBrains Mono',fontSize:11.5}},a.pct+'%'))),
+            R('td',null,R('span',{className:'badge '+attClass(a.pct)},a.pct>=75?'OK':'LOW'))
+          )))
+        )
+      )
+    )
+  );
+}
+
+function AdminAnalytics({marks,students}){
+  const sAvgs=SUBJECTS.map(sub=>{const sm=marks.filter(m=>m.subject_id===sub.subject_id);const avg=sm.length?sm.reduce((s,m)=>s+m.total_marks,0)/sm.length:0;return{name:sub.subject_name.split(' ')[0],avg:avg.toFixed(1)};});
+  const maxA=Math.max(...sAvgs.map(s=>+s.avg),1);
+  const aAvgs=SUBJECTS.map(sub=>{const sa=ATTENDANCE.filter(a=>a.subject_id===sub.subject_id);const avg=sa.length?sa.reduce((s,a)=>s+a.pct,0)/sa.length:0;return{name:sub.subject_name.split(' ')[0],avg:avg.toFixed(1),color:attColor(avg)};});
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Analytics'),R('div',{className:'section-sub'},'Subject-wise performance insights'))),
+    R('div',{className:'two-col'},
+      R('div',{className:'card'},R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'.75rem'}},'Avg Marks by Subject'),R('div',{className:'bar-chart',style:{height:110}},sAvgs.map(s=>R('div',{key:s.name,className:'bar-chart-col'},R('div',{className:'bar-chart-bar',style:{height:Math.max(6,Math.round((+s.avg/maxA)*90))+'px',background:'linear-gradient(to top,var(--gold-dk),var(--gold-lt)'}}),R('div',{className:'bar-chart-label'},s.name),R('div',{className:'bar-chart-label',style:{color:'var(--gold-lt)'}},s.avg))))),
+      R('div',{className:'card'},R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'.75rem'}},'Avg Attendance by Subject'),R('div',{className:'bar-chart',style:{height:110}},aAvgs.map(s=>R('div',{key:s.name,className:'bar-chart-col'},R('div',{className:'bar-chart-bar',style:{height:Math.max(6,Math.round((+s.avg/100)*90))+'px',background:s.color}}),R('div',{className:'bar-chart-label'},s.name),R('div',{className:'bar-chart-label',style:{color:'var(--white)'}},s.avg+'%')))))
+    ),
+    R('div',{className:'card',style:{marginTop:'1rem'}},
+      R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Student CGPA Overview'),
+      [...students].sort((a,b)=>b.cgpa-a.cgpa).map(s=>R('div',{key:s.student_id,style:{display:'flex',alignItems:'center',gap:10,marginBottom:'.6rem'}},
+        R('div',{className:'avatar-sm',style:{background:avatarBg(s.student_id),fontSize:11,width:26,height:26}},initials(s.name)),
+        R('div',{style:{flex:'0 0 120px',fontSize:13,fontWeight:500}},s.name),
+        R('div',{className:'progress',style:{flex:1}},R('div',{className:'progress-fill',style:{width:(s.cgpa/10*100)+'%',background:s.cgpa>=8?'var(--green)':s.cgpa>=6?'var(--blue)':'var(--amber)'}})),
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:15,color:'var(--gold-lt)',flexShrink:0,width:32,textAlign:'right'}},s.cgpa)
+      ))
+    )
+  );
+}
+
+// ── STUDENT HOME DASHBOARD ───────────────────────────────────────────────────
+function StudentHome({student,myMarks,myAtt,todos,setTodos}){
+  const gpa=calcGPA(myMarks);
+  const avgAtt=myAtt.length?(myAtt.reduce((s,a)=>s+a.pct,0)/myAtt.length).toFixed(1):0;
+  const lowAtt=myAtt.filter(a=>a.pct<75).length;
+  const toggle=id=>setTodos(prev=>prev.map(t=>t.id===id?{...t,done:!t.done}:t));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'profile-hero'},
+      R('div',{className:'avatar-lg',style:{background:avatarBg(student.student_id)}},initials(student.name)),
+      R('div',{style:{flex:1}},
+        R('div',{className:'profile-name'},'Welcome back, '+student.name.split(' ')[0]+'!'),
+        R('div',{className:'profile-meta'},student.branch+' • '+student.roll+' • Semester '+student.semester),
+        R('div',{className:'profile-tags'},R('span',{className:'badge badge-gold'},'Sem '+student.semester),R('span',{className:'badge badge-muted'},student.branch),myMarks.length&&R('span',{className:'badge '+(+gpa>=8?'badge-green':'badge-blue')},'GPA '+gpa))
+      )
+    ),
+    R('div',{className:'metrics-grid'},
+      R('div',{className:'metric-card metric-gold'},R('div',{className:'metric-icon'},'✦'),R('div',{className:'metric-label'},'Current GPA'),R('div',{className:'metric-value'},gpa),R('div',{className:'metric-sub'},'Out of 10.0')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📊'),R('div',{className:'metric-label'},'Avg Attendance'),R('div',{className:'metric-value'},avgAtt+'%'),R('div',{className:'metric-sub',style:{color:attColor(+avgAtt)}},+avgAtt>=75?'On track':'Below required')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📚'),R('div',{className:'metric-label'},'Subjects'),R('div',{className:'metric-value'},myMarks.length),R('div',{className:'metric-sub'},'Enrolled')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'⚠'),R('div',{className:'metric-label'},'Low Att.'),R('div',{className:'metric-value',style:{color:lowAtt?'var(--red)':'var(--green)'}},lowAtt),R('div',{className:'metric-sub'},lowAtt?'At risk':'All clear')),
+      R('div',{className:'metric-card'},R('div',{className:'metric-icon'},'📋'),R('div',{className:'metric-label'},'Backlogs'),R('div',{className:'metric-value',style:{color:student.backlogs>0?'var(--red)':'var(--green)'}},student.backlogs),R('div',{className:'metric-sub'},student.backlogs?'Active':'None'))
+    ),
+    R('div',{className:'two-col'},
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Subject Performance'),
+        myMarks.map(m=>{const pct=Math.round((m.total_marks/150)*100);return R('div',{key:m.mark_id,className:'subj-bar'},R('div',{className:'subj-bar-name'},subjectName(m.subject_id)),R('div',{className:'subj-bar-track'},R('div',{className:'progress'},R('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=70?'var(--green)':pct>=50?'var(--blue)':'var(--amber)'}}))),R('div',{className:'subj-bar-score'},m.total_marks));})
+      ),
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Upcoming Exams'),
+        EXAMS.slice(0,3).map(ex=>R('div',{key:ex.id,className:'exam-card'},R('div',{className:'exam-date-box'},R('div',{className:'exam-day'},ex.day),R('div',{className:'exam-month'},ex.month)),R('div',{style:{flex:1}},R('div',{className:'exam-subj'},ex.subject),R('div',{className:'exam-meta'},ex.time+' · '+ex.room)),R('span',{className:'badge badge-muted'},ex.credits+' cr')))
+      )
+    ),
+    R('div',{className:'card',style:{marginTop:'1.1rem'}},
+      R('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'1rem'}},R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)'}},'To-Do'),R('span',{style:{fontSize:11.5,color:'var(--muted)'}},todos.filter(t=>!t.done).length+' remaining')),
+      todos.map(t=>R('div',{key:t.id,className:'todo-item'},R('div',{className:'todo-check'+(t.done?' done':''),onClick:()=>toggle(t.id)},t.done?'✓':''),R('div',{className:'todo-text'+(t.done?' done':'')},t.text),R('div',{style:{fontSize:10.5,color:'var(--muted)',fontFamily:'JetBrains Mono'}},t.due)))
+    ),
+    R('div',{className:'card',style:{marginTop:'1.1rem'}},
+      R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'.9rem'}},'Latest Notices'),
+      NOTICES.slice(0,3).map(n=>{const ts={urgent:{cls:'notice-urgent',badge:'badge-red',label:'Urgent'},info:{cls:'notice-info',badge:'badge-blue',label:'Info'},event:{cls:'notice-event',badge:'badge-purple',label:'Event'}};const t=ts[n.type]||ts.info;return R('div',{key:n.id,className:'notice-card '+t.cls},R('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'.2rem'}},R('div',{className:'notice-title'},n.title),R('span',{className:'badge '+t.badge},t.label)),R('div',{className:'notice-body'},n.body));})
+    )
+  );
+}
+
+function StudentMarks({myMarks}){
+  const gpa=calcGPA(myMarks);
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'My Grades'),R('div',{className:'section-sub'},'Academic performance report')),R('span',{className:'badge badge-gold',style:{fontSize:13,padding:'5px 13px'}},'GPA '+gpa)),
+    R('div',{className:'card'},
+      R('div',{className:'table-wrap'},
+        R('table',null,
+          R('thead',null,R('tr',null,R('th',null,'Subject'),R('th',null,'Code'),R('th',null,'Internal'),R('th',null,'External'),R('th',null,'Total'),R('th',null,'%'),R('th',null,'Grade'))),
+          R('tbody',null,myMarks.map(m=>{
+            const sub=SUBJECTS.find(s=>s.subject_id===m.subject_id);
+            const pct=Math.round((m.total_marks/150)*100);
+            return R('tr',{key:m.mark_id},
+              R('td',null,R('div',null,R('div',{style:{fontWeight:500}},sub.subject_name),R('div',{style:{fontSize:10.5,color:'var(--muted)'}},sub.faculty))),
+              R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:11,color:'var(--muted-lt)'}},sub.code)),
+              R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:12}},m.internal_marks+'/50')),
+              R('td',null,R('span',{style:{fontFamily:'JetBrains Mono',fontSize:12}},m.external_marks+'/100')),
+              R('td',null,R('span',{style:{fontFamily:'DM Serif Display',fontSize:16}},m.total_marks)),
+              R('td',null,R('div',{style:{display:'flex',alignItems:'center',gap:7}},R('div',{className:'progress',style:{width:55}},R('div',{className:'progress-fill',style:{width:pct+'%',background:pct>=70?'var(--green)':pct>=50?'var(--blue)':'var(--amber)'}})),R('span',{style:{fontSize:11,fontFamily:'JetBrains Mono'}},pct+'%'))),
+              R('td',null,R('span',{className:'badge '+gradeClass(m.grade)},m.grade))
+            );
+          }))
+        )
+      )
+    )
+  );
+}
+
+function StudentAttendance({myAtt}){
+  const avgAtt=myAtt.length?(myAtt.reduce((s,a)=>s+a.pct,0)/myAtt.length).toFixed(1):0;
+  const lowAtt=myAtt.filter(a=>a.pct<75).length;
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Attendance'),R('div',{className:'section-sub'},'Track your class attendance')),R('span',{className:'badge '+(+avgAtt>=75?'badge-green':'badge-amber'),style:{fontSize:13,padding:'5px 13px'}},'Overall '+avgAtt+'%')),
+    lowAtt>0&&R('div',{style:{background:'var(--amber-bg)',border:'1px solid rgba(232,168,56,.22)',borderRadius:'var(--r-md)',padding:'10px 14px',marginBottom:'1rem',fontSize:12.5,color:'var(--amber)'}},'⚠  '+lowAtt+' subject(s) below 75% required threshold'),
+    R('div',{className:'att-grid'},myAtt.map(a=>{
+      const sub=SUBJECTS.find(s=>s.subject_id===a.subject_id);
+      return R('div',{key:a.attendance_id,className:'att-card'},
+        R('div',{style:{fontSize:13.5,fontWeight:600,color:'var(--white)'}},sub.subject_name),
+        R('div',{style:{display:'flex',alignItems:'flex-end',justifyContent:'space-between'}},R('div',{className:'att-pct',style:{color:attColor(a.pct)}},a.pct+'%'),R('span',{className:'badge '+attClass(a.pct)},a.pct>=75?'OK':'LOW')),
+        R('div',{className:'progress',style:{height:6}},R('div',{className:'progress-fill',style:{width:a.pct+'%',background:attColor(a.pct)}})),
+        R('div',{style:{display:'flex',justifyContent:'space-between',fontSize:10.5,color:'var(--muted)',marginTop:3}},R('span',null,a.attended+' attended'),R('span',null,a.total_classes+' total')),
+        R('div',{style:{fontSize:10.5,color:'var(--muted)',marginTop:2}},sub.room+' · '+sub.faculty)
+      );
+    }))
+  );
+}
+
+function StudentSchedule({myMarks}){
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Class Schedule'),R('div',{className:'section-sub'},'Your weekly timetable'))),
+    R('div',{className:'two-col'},
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},"Today's Classes"),
+        SCHEDULE.map((s,i)=>R('div',{key:i,className:'schedule-row'},R('div',{className:'schedule-time'},s.time),R('div',{className:'schedule-bar',style:{background:s.color}}),R('div',null,R('div',{className:'schedule-subj'},s.subject),R('div',{className:'schedule-room'},s.room+' · '+s.day))))
+      ),
+      R('div',{className:'card'},
+        R('div',{style:{fontFamily:'DM Serif Display',fontSize:17,color:'var(--white)',marginBottom:'1rem'}},'Subject Details'),
+        myMarks.map(m=>{const sub=SUBJECTS.find(s=>s.subject_id===m.subject_id);return sub?R('div',{key:sub.subject_id,style:{padding:'9px 0',borderBottom:'1px solid var(--border)'}},R('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},R('div',null,R('div',{style:{fontSize:13.5,fontWeight:500,color:'var(--white)'}},sub.subject_name),R('div',{style:{fontSize:11,color:'var(--muted)',marginTop:2}},sub.faculty+' · '+sub.room)),R('span',{className:'badge badge-muted'},sub.credits+' cr')),R('div',{style:{fontSize:10.5,color:'var(--muted-lt)',marginTop:3,fontFamily:'JetBrains Mono'}},sub.schedule)):null;})
+      )
+    )
+  );
+}
+
+function StudentExams(){
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'Examination Schedule'),R('div',{className:'section-sub'},'Mid-semester exams – April 2025'))),
+    R('div',{className:'card'},EXAMS.map(ex=>R('div',{key:ex.id,className:'exam-card'},R('div',{className:'exam-date-box'},R('div',{className:'exam-day'},ex.day),R('div',{className:'exam-month'},ex.month)),R('div',{style:{flex:1}},R('div',{className:'exam-subj'},ex.subject),R('div',{className:'exam-meta'},ex.time+' · '+ex.room)),R('span',{className:'badge badge-gold'},ex.credits+' Credits'))))
+  );
+}
+
+function StudentTodos({todos,setTodos}){
+  const [showAdd,setShowAdd]=useState(false);
+  const [form,setForm]=useState({text:'',due:''});
+  const toggle=id=>setTodos(prev=>prev.map(t=>t.id===id?{...t,done:!t.done}:t));
+  const remove=id=>setTodos(prev=>prev.filter(t=>t.id!==id));
+  return R('div',{className:'page-enter'},
+    R('div',{className:'section-head'},R('div',null,R('div',{className:'section-title'},'To-Do List'),R('div',{className:'section-sub'},todos.filter(t=>!t.done).length+' remaining')),R('button',{className:'btn btn-gold',onClick:()=>setShowAdd(true)},'＋ Add Task')),
+    R('div',{className:'card'},
+      todos.length===0&&R('div',{className:'empty'},R('div',{className:'empty-icon'},'🎉'),R('div',{className:'empty-text'},'All done!')),
+      todos.map(t=>R('div',{key:t.id,className:'todo-item'},
+        R('div',{className:'todo-check'+(t.done?' done':''),onClick:()=>toggle(t.id)},t.done?'✓':''),
+        R('div',{style:{flex:1}},R('div',{className:'todo-text'+(t.done?' done':'')},t.text),R('div',{style:{fontSize:10.5,color:'var(--muted)',fontFamily:'JetBrains Mono'}},'Due: '+t.due)),
+        R('span',{className:'badge '+(t.done?'badge-green':'badge-amber'),style:{marginRight:6}},t.done?'Done':'Pending'),
+        R('button',{className:'btn btn-xs btn-red',onClick:()=>remove(t.id)},'✕')
+      ))
+    ),
+    showAdd&&R('div',{className:'modal-backdrop',onClick:()=>setShowAdd(false)},
+      R('div',{className:'modal',onClick:ev=>ev.stopPropagation()},
+        R('div',{className:'modal-title'},'Add Task'),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Task'),R('input',{className:'form-input',value:form.text,onChange:ev=>setForm(f=>({...f,text:ev.target.value})),placeholder:'e.g. Submit assignment'})),
+        R('div',{className:'form-group'},R('label',{className:'form-label'},'Due Date'),R('input',{className:'form-input',value:form.due,onChange:ev=>setForm(f=>({...f,due:ev.target.value})),placeholder:'Apr 15'})),
+        R('div',{style:{display:'flex',gap:8,justifyContent:'flex-end'}},
+          R('button',{className:'btn',onClick:()=>setShowAdd(false)},'Cancel'),
+          R('button',{className:'btn btn-gold',onClick:()=>{if(form.text){setTodos(prev=>[...prev,{id:Date.now(),text:form.text,done:false,due:form.due||'—'}]);setShowAdd(false);setForm({text:'',due:''});}}},'Add')
+        )
+      )
+    )
+  );
+}
+
+// ── MAIN DASHBOARD SHELLS ────────────────────────────────────────────────────
+function StudentDashboard({user}){
+  const [page,setPage]=useState('dashboard');
+  const student=STUDENTS.find(s=>s.student_id===user.student_id);
+  const myMarks=INITIAL_MARKS.filter(m=>m.student_id===user.student_id);
+  const myAtt=ATTENDANCE.filter(a=>a.student_id===user.student_id);
+  const [todos,setTodos]=useState(TODOS_DEFAULT);
+  const [notices,setNotices]=useState(NOTICES);
+  const [grievances,setGrievances]=useState(GRIEVANCES_DEFAULT);
+
+  const renderPage=()=>{
+    switch(page){
+      case'dashboard':  return R(StudentHome,{student,myMarks,myAtt,todos,setTodos});
+      case'marks':      return R(StudentMarks,{myMarks});
+      case'attendance': return R(StudentAttendance,{myAtt});
+      case'predictor':  return R(PageCGPAPredictor,{student,myMarks});
+      case'backlogs':   return R(PageBacklogs,{student});
+      case'schedule':   return R(StudentSchedule,{myMarks});
+      case'exams':      return R(StudentExams,{});
+      case'todos':      return R(StudentTodos,{todos,setTodos});
+      case'placement':  return R(PagePlacement,{student});
+      case'calendar':   return R(PageCalendar,{});
+      case'clubs':      return R(PageClubs,{});
+      case'faculty':    return R(PageFaculty,{});
+      case'notices':    return R(PageNotices,{role:'student',notices,setNotices});
+      case'grievances': return R(PageGrievances,{role:'student',grievances,setGrievances});
+      case'fees':       return R(PageFees,{});
+      default:          return R(StudentHome,{student,myMarks,myAtt,todos,setTodos});
+    }
+  };
+  return R('div',{className:'layout'},R(Sidebar,{page,setPage,role:'student'}),R('div',{className:'main'},renderPage()));
+}
+
+function AdminDashboard(){
+  const [page,setPage]=useState('overview');
+  const [marks,setMarks]=useState(INITIAL_MARKS);
+  const [students,setStudents]=useState(STUDENTS);
+  const [notices,setNotices]=useState(NOTICES);
+  const [grievances,setGrievances]=useState(GRIEVANCES_DEFAULT);
+
+  const renderPage=()=>{
+    switch(page){
+      case'overview':   return R(AdminOverview,{marks,students});
+      case'students':   return R(AdminStudents,{students,setStudents});
+      case'marks':      return R(AdminMarks,{marks,setMarks});
+      case'attendance': return R(AdminAttendance,{});
+      case'analytics':  return R(AdminAnalytics,{marks,students});
+      case'notices':    return R(PageNotices,{role:'admin',notices,setNotices});
+      case'grievances': return R(PageGrievances,{role:'admin',grievances,setGrievances});
+      default:          return R(AdminOverview,{marks,students});
+    }
+  };
+  return R('div',{className:'layout'},R(Sidebar,{page,setPage,role:'admin'}),R('div',{className:'main'},renderPage()));
+}
+
+function App(){
+  const [user,setUser]=useState(null);
+  const [dark,setDark]=useState(true);
+  useEffect(()=>{document.documentElement.setAttribute('data-theme',dark?'dark':'light');},[dark]);
+  if(!user)return R(Login,{onLogin:setUser,dark,setDark});
+  return R('div',null,
+    R(Navbar,{user,dark,setDark,onLogout:()=>setUser(null)}),
+    user.role==='admin'?R(AdminDashboard):R(StudentDashboard,{user})
+  );
+}
+
+ReactDOM.render(R(App),document.getElementById('root'));
+</script>
+</body>
+</html>
